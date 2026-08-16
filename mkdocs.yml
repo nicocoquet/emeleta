@@ -8,19 +8,61 @@ theme:
   name: material
   language: fr
   features:
-    - navigation.instant
+    - navigation.tabs
     - navigation.sections
     - navigation.top
     - search.highlight
     - search.suggest
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       primary: custom
       accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Mode sombre / Dark / Scuro
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Mode clair / Light / Chiaro
 
 plugins:
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      languages:
+        - locale: fr
+          default: true
+          name: Français
+          build: true
+        - locale: en
+          name: English
+          build: true
+          nav_translations:
+            Accueil: Home
+            Catalogue: Catalogue
+            Statistiques: Statistics
+            Mode d'emploi: User guide
+          theme:
+            language: en
+        - locale: it
+          name: Italiano
+          build: true
+          nav_translations:
+            Accueil: Home
+            Catalogue: Catalogo
+            Statistiques: Statistiche
+            Mode d'emploi: Guida
+          theme:
+            language: it
   - search:
-      lang: fr
+      lang:
+        - fr
+        - en
+        - it
 
 markdown_extensions:
   - admonition
