@@ -19,7 +19,7 @@ SOURCE_PHOTOS = ROOT / "photos"
 DOCS = ROOT / "docs"
 CATALOG = DOCS / "catalogue"
 SITE_IMAGES = DOCS / "assets" / "images"
-STATISTICS = DOCS / "statistiques.md"
+STATISTICS = DOCS / "statistiques.fr.md"
 
 
 def text(value) -> str:
@@ -225,12 +225,22 @@ def main() -> int:
 
     CATALOG.mkdir(parents=True, exist_ok=True)
     SITE_IMAGES.mkdir(parents=True, exist_ok=True)
-    for old in CATALOG.glob("MOB-*.md"):
+    # Migration ponctuelle depuis l'ancienne structure non localisée.
+    for legacy in [DOCS / "index.md", CATALOG / "index.md", DOCS / "statistiques.md"]:
+        if legacy.exists():
+            legacy.unlink()
+    for legacy in CATALOG.glob("MOB-*.md"):
+        if not any(legacy.name.endswith(f".{locale}.md") for locale in ("fr", "en", "it")):
+            legacy.unlink()
+    # Ne régénérer que les fiches françaises : les futures traductions .en.md
+    # et .it.md doivent rester intactes.
+    for old in CATALOG.glob("MOB-*.fr.md"):
         old.unlink()
 
     cards = []
     categories = defaultdict(int)
     warnings = []
+    featured_image = ""
 
     for obj in furniture:
         object_id = text(obj["Identifiant"])
@@ -259,15 +269,12 @@ def main() -> int:
         estimate = " – ".join(v for v in [low, high] if v) or "Non renseignée"
 
         metadata = [
-            ("Identifiant", object_id),
             ("Catégorie", category),
-            ("Datation", text(obj.get("Datation"))),
             ("Origine", text(obj.get("Origine"))),
             ("Matériaux", text(obj.get("Matériaux"))),
             ("Dimensions", text(obj.get("Dimensions"))),
             ("Localisation", text(obj.get("Localisation"))),
             ("Statut", text(obj.get("Statut"))),
-            ("Estimation indicative", estimate),
         ]
         meta_html = "\n".join(
             f'<div class="record-field"><dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd></div>'
@@ -292,13 +299,25 @@ def main() -> int:
                 sources.append(f"- [{html.escape(url)}]({url})")
         source_block = "\n".join(sources) if sources else "_Aucune source renseignée._"
 
-        page = f"""# {title}
+        hero_visual = (
+            f'<a href="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" target="_blank">'
+            f'<img src="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}"></a>'
+            if cover else '<div class="record-placeholder">Sans photographie</div>'
+        )
 
-<p class="record-kicker">{html.escape(object_id)} · {html.escape(category)}</p>
+        page = f"""<div class="lot-hero">
+<div class="lot-visual">{hero_visual}</div>
+<div class="lot-summary">
+<p class="record-kicker">Lot {html.escape(object_id)} · {html.escape(category)}</p>
+<h1>{html.escape(title)}</h1>
+<p class="lot-dating">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}</p>
+<div class="lot-estimate"><span>Estimation indicative</span><strong>{html.escape(estimate)}</strong></div>
 
 <dl class="record-grid">
 {meta_html}
 </dl>
+</div>
+</div>
 
 ## Description
 
@@ -320,26 +339,46 @@ def main() -> int:
 
 <p class="notice">L’identification et l’estimation sont indicatives et peuvent évoluer avec de nouvelles mesures, photographies ou expertises.</p>
 """
-        (CATALOG / f"{object_id}.md").write_text(page, encoding="utf-8")
+        (CATALOG / f"{object_id}.fr.md").write_text(page, encoding="utf-8")
 
         cover_html = (
             f'<img src="assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}">'
             if cover else '<div class="card-placeholder">Sans photographie</div>'
         )
+        if cover and (object_id == "MOB-040" or not featured_image):
+            featured_image = Path(text(cover["Fichier"])).name
         cards.append(
             f'<article class="catalog-card"><a href="catalogue/{object_id}/">{cover_html}'
-            f'<div class="catalog-card-body"><span>{html.escape(category)}</span><h2>{html.escape(title)}</h2>'
-            f'<p>{html.escape(text(obj.get("Datation")) or "Datation à préciser")}</p></div></a></article>'
+            f'<div class="catalog-card-body"><div class="card-lot"><span>Lot {html.escape(object_id)}</span>'
+            f'<span>{html.escape(category)}</span></div><h2>{html.escape(title)}</h2>'
+            f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}</p>'
+            f'<p class="card-estimate"><span>Estimation</span><strong>{html.escape(estimate)}</strong></p></div></a></article>'
         )
 
     category_text = " · ".join(f"{html.escape(k)} ({v})" for k, v in sorted(categories.items()))
-    index = f"""# Inventaire du mobilier
-
-<div class="hero-panel">
-  <p class="eyebrow">Catalogue illustré</p>
-  <h2>{len(cards)} objet{'s' if len(cards) != 1 else ''} documenté{'s' if len(cards) != 1 else ''}</h2>
-  <p>Un inventaire évolutif du mobilier, de ses caractéristiques matérielles et de son état de conservation.</p>
+    total_low = sum(number(obj.get("Estimation basse (€)")) or 0 for obj in furniture)
+    total_high = sum(number(obj.get("Estimation haute (€)")) or 0 for obj in furniture)
+    hero_image = (
+        f'<div class="hero-image"><img src="assets/images/{html.escape(featured_image)}" alt="Pièce choisie de la collection"></div>'
+        if featured_image else ""
+    )
+    index = f"""<div class="hero-panel">
+  <div class="hero-copy">
+    <p class="eyebrow">Collection particulière · Toscane</p>
+    <h1>Inventaire<br>du mobilier</h1>
+    <p class="hero-intro">Un catalogue évolutif consacré au mobilier, aux objets d’art et aux témoins matériels conservés dans la maison.</p>
+    <a class="hero-link" href="catalogue/">Découvrir le catalogue <span>→</span></a>
+  </div>
+  {hero_image}
 </div>
+
+<div class="collection-summary">
+  <div><span>Objets documentés</span><strong>{len(cards)}</strong></div>
+  <div><span>Estimation globale</span><strong>{money(total_low)} – {money(total_high)}</strong></div>
+  <div><span>Catégories</span><strong>{len(categories)}</strong></div>
+</div>
+
+<div class="section-heading"><p class="eyebrow">Sélection complète</p><h2>Les lots de la collection</h2></div>
 
 <p class="category-line">{category_text}</p>
 
@@ -347,8 +386,8 @@ def main() -> int:
 {''.join(cards) if cards else '<p class="empty-state">Aucun objet publié.</p>'}
 </div>
 """
-    (DOCS / "index.md").write_text(index, encoding="utf-8")
-    (CATALOG / "index.md").write_text(
+    (DOCS / "index.fr.md").write_text(index, encoding="utf-8")
+    (CATALOG / "index.fr.md").write_text(
         "# Catalogue\n\nToutes les fiches publiées apparaissent ci-dessous. Utilisez la recherche en haut de la page pour retrouver un objet, une matière, une époque ou une localisation.\n\n"
         + "\n".join(f"- [{text(o['Titre'])}]({text(o['Identifiant'])}.md) — {text(o['Datation'])}" for o in furniture),
         encoding="utf-8",
