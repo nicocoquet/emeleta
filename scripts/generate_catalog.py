@@ -50,6 +50,28 @@ def number(value) -> float | None:
         return None
 
 
+def quantity(obj: dict) -> int:
+    value = number(obj.get("Quantité"))
+    return max(1, int(value)) if value is not None else 1
+
+
+def unit_value(obj: dict, side: str) -> float | None:
+    return number(obj.get(f"Estimation unitaire {side} (€)")) or number(obj.get(f"Estimation {side} (€)"))
+
+
+def lot_value(obj: dict, side: str) -> float | None:
+    """Retourne le total du lot, même si le moteur XLSX n'a pas mis en cache la formule."""
+    total = number(obj.get(f"Estimation du lot {side} (€)"))
+    if total is not None:
+        return total
+    unit = unit_value(obj, side)
+    return unit * quantity(obj) if unit is not None else None
+
+
+def estimate_range(low, high) -> str:
+    return " – ".join(v for v in [money(low), money(high)] if v) or "Non renseignée"
+
+
 def date_bucket(value: str) -> str:
     """Regroupe les datations libres du tableur en périodes lisibles."""
     label = value.lower().replace("–", "-").replace("—", "-")
@@ -111,15 +133,15 @@ def top_with_other(data: Counter, limit: int = 12) -> Counter:
 
 
 def generate_statistics(furniture: list[dict]) -> None:
-    lows = [value for obj in furniture if (value := number(obj.get("Estimation basse (€)"))) is not None]
-    highs = [value for obj in furniture if (value := number(obj.get("Estimation haute (€)"))) is not None]
+    lows = [value for obj in furniture if (value := lot_value(obj, "basse")) is not None]
+    highs = [value for obj in furniture if (value := lot_value(obj, "haute")) is not None]
     total_low = sum(lows)
     total_high = sum(highs)
     estimated_count = sum(
         1
         for obj in furniture
-        if number(obj.get("Estimation basse (€)")) is not None
-        or number(obj.get("Estimation haute (€)")) is not None
+        if lot_value(obj, "basse") is not None
+        or lot_value(obj, "haute") is not None
     )
 
     locations = Counter(text(obj.get("Localisation")) or "Localisation à préciser" for obj in furniture)
@@ -130,6 +152,7 @@ def generate_statistics(furniture: list[dict]) -> None:
     category_chart = bar_chart(top_with_other(categories))
     period_chart = bar_chart(periods)
     coverage = (estimated_count / len(furniture) * 100) if furniture else 0
+    item_count = sum(quantity(obj) for obj in furniture)
 
     page = f"""# Statistiques
 
@@ -142,9 +165,9 @@ def generate_statistics(furniture: list[dict]) -> None:
     <small>Fourchette indicative cumulée</small>
   </article>
   <article class="stat-card">
-    <span>Objets publiés</span>
+    <span>Lots publiés</span>
     <strong>{len(furniture)}</strong>
-    <small>Fiches prises en compte</small>
+    <small>{item_count} item(s) inventorié(s)</small>
   </article>
   <article class="stat-card">
     <span>Objets estimés</span>
@@ -264,9 +287,11 @@ def main() -> int:
         category = text(obj["Catégorie"]) or "Non classé"
         categories[category] += 1
 
-        low = money(obj.get("Estimation basse (€)"))
-        high = money(obj.get("Estimation haute (€)"))
-        estimate = " – ".join(v for v in [low, high] if v) or "Non renseignée"
+        item_quantity = quantity(obj)
+        quantity_label = f" · {item_quantity} items" if item_quantity > 1 else ""
+        unit_estimate = estimate_range(unit_value(obj, "basse"), unit_value(obj, "haute"))
+        lot_estimate = estimate_range(lot_value(obj, "basse"), lot_value(obj, "haute"))
+        estimate = lot_estimate
 
         metadata = [
             ("Catégorie", category),
@@ -274,6 +299,7 @@ def main() -> int:
             ("Matériaux", text(obj.get("Matériaux"))),
             ("Dimensions", text(obj.get("Dimensions"))),
             ("Localisation", text(obj.get("Localisation"))),
+            ("Quantité", str(item_quantity)),
             ("Statut", text(obj.get("Statut"))),
         ]
         meta_html = "\n".join(
@@ -299,6 +325,12 @@ def main() -> int:
                 sources.append(f"- [{html.escape(url)}]({url})")
         source_block = "\n".join(sources) if sources else "_Aucune source renseignée._"
 
+        association_ids = re.findall(r"MOB-\d{3}", text(obj.get("Associé à")), flags=re.IGNORECASE)
+        association_block = " · ".join(
+            f'<a href="../{associated.upper()}/">{html.escape(associated.upper())}</a>'
+            for associated in association_ids
+        ) or "_Aucun objet associé._"
+
         hero_visual = (
             f'<a href="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" target="_blank">'
             f'<img src="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}"></a>'
@@ -311,7 +343,8 @@ def main() -> int:
 <p class="record-kicker">Lot {html.escape(object_id)} · {html.escape(category)}</p>
 <h1>{html.escape(title)}</h1>
 <p class="lot-dating">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}</p>
-<div class="lot-estimate"><span>Estimation indicative</span><strong>{html.escape(estimate)}</strong></div>
+<div class="lot-estimate"><span>Estimation du lot</span><strong>{html.escape(lot_estimate)}</strong></div>
+<p class="lot-unit-estimate">Estimation unitaire : {html.escape(unit_estimate)}</p>
 
 <dl class="record-grid">
 {meta_html}
@@ -326,6 +359,10 @@ def main() -> int:
 ## État de conservation
 
 {text(obj.get("État")) or "_État à compléter._"}
+
+## Objets associés
+
+{association_block}
 
 ## Photographies
 
@@ -351,13 +388,15 @@ def main() -> int:
             f'<article class="catalog-card"><a href="catalogue/{object_id}/">{cover_html}'
             f'<div class="catalog-card-body"><div class="card-lot"><span>Lot {html.escape(object_id)}</span>'
             f'<span>{html.escape(category)}</span></div><h2>{html.escape(title)}</h2>'
-            f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}</p>'
+            f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}'
+            f'{html.escape(quantity_label)}</p>'
             f'<p class="card-estimate"><span>Estimation</span><strong>{html.escape(estimate)}</strong></p></div></a></article>'
         )
 
     category_text = " · ".join(f"{html.escape(k)} ({v})" for k, v in sorted(categories.items()))
-    total_low = sum(number(obj.get("Estimation basse (€)")) or 0 for obj in furniture)
-    total_high = sum(number(obj.get("Estimation haute (€)")) or 0 for obj in furniture)
+    total_items = sum(quantity(obj) for obj in furniture)
+    total_low = sum(lot_value(obj, "basse") or 0 for obj in furniture)
+    total_high = sum(lot_value(obj, "haute") or 0 for obj in furniture)
     hero_image = (
         f'<div class="hero-image"><img src="assets/images/{html.escape(featured_image)}" alt="Pièce choisie de la collection"></div>'
         if featured_image else ""
@@ -373,7 +412,7 @@ def main() -> int:
 </div>
 
 <div class="collection-summary">
-  <div><span>Objets documentés</span><strong>{len(cards)}</strong></div>
+  <div><span>Lots documentés</span><strong>{len(cards)}</strong><small>{total_items} items</small></div>
   <div><span>Estimation globale</span><strong>{money(total_low)} – {money(total_high)}</strong></div>
   <div><span>Catégories</span><strong>{len(categories)}</strong></div>
 </div>
