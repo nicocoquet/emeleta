@@ -7,7 +7,7 @@ import html
 import re
 import shutil
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from openpyxl import load_workbook
@@ -19,6 +19,7 @@ SOURCE_PHOTOS = ROOT / "photos"
 DOCS = ROOT / "docs"
 CATALOG = DOCS / "catalogue"
 SITE_IMAGES = DOCS / "assets" / "images"
+STATISTICS = DOCS / "statistiques.md"
 
 
 def text(value) -> str:
@@ -38,6 +39,149 @@ def money(value) -> str:
         return f"{float(value):,.0f} €".replace(",", " ")
     except (TypeError, ValueError):
         return text(value)
+
+
+def number(value) -> float | None:
+    if value in (None, ""):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def date_bucket(value: str) -> str:
+    """Regroupe les datations libres du tableur en périodes lisibles."""
+    label = value.lower().replace("–", "-").replace("—", "-")
+    years = [int(year) for year in re.findall(r"\b(1[89]\d{2}|20\d{2})\b", label)]
+    if years:
+        midpoint = sum(years) / len(years)
+        if midpoint < 1900:
+            return "XIXe siècle"
+        if midpoint < 1925:
+            return "1900-1924"
+        if midpoint < 1945:
+            return "1925-1944"
+        if midpoint < 1970:
+            return "1945-1969"
+        if midpoint < 2000:
+            return "1970-1999"
+        return "Depuis 2000"
+    if "xixe" in label and "xxe" in label:
+        return "Autour de 1900"
+    if "xixe" in label:
+        return "XIXe siècle"
+    if "première moitié du xxe" in label or "début du xxe" in label:
+        return "1900-1944"
+    if "milieu du xxe" in label:
+        return "1945-1969"
+    if "seconde moitié du xxe" in label:
+        return "1945-1999"
+    if "xxe" in label:
+        return "XXe siècle (large)"
+    return "Datation à préciser"
+
+
+def bar_chart(data: Counter, empty_label: str = "Aucune donnée") -> str:
+    if not data:
+        return f'<p class="empty-state">{html.escape(empty_label)}</p>'
+    maximum = max(data.values())
+    total = sum(data.values())
+    rows = []
+    for label, count in sorted(data.items(), key=lambda item: (-item[1], item[0])):
+        width = 100 * count / maximum
+        share = 100 * count / total
+        rows.append(
+            '<div class="stat-bar-row">'
+            f'<div class="stat-bar-label"><span>{html.escape(label)}</span>'
+            f'<strong>{count} <small>({share:.0f} %)</small></strong></div>'
+            f'<div class="stat-bar-track"><span style="width:{width:.1f}%"></span></div>'
+            '</div>'
+        )
+    return "\n".join(rows)
+
+
+def top_with_other(data: Counter, limit: int = 12) -> Counter:
+    ordered = data.most_common()
+    if len(ordered) <= limit:
+        return data
+    result = Counter(dict(ordered[:limit]))
+    result["Autres catégories"] = sum(count for _, count in ordered[limit:])
+    return result
+
+
+def generate_statistics(furniture: list[dict]) -> None:
+    lows = [value for obj in furniture if (value := number(obj.get("Estimation basse (€)"))) is not None]
+    highs = [value for obj in furniture if (value := number(obj.get("Estimation haute (€)"))) is not None]
+    total_low = sum(lows)
+    total_high = sum(highs)
+    estimated_count = sum(
+        1
+        for obj in furniture
+        if number(obj.get("Estimation basse (€)")) is not None
+        or number(obj.get("Estimation haute (€)")) is not None
+    )
+
+    locations = Counter(text(obj.get("Localisation")) or "Localisation à préciser" for obj in furniture)
+    categories = Counter(text(obj.get("Catégorie")) or "Non classé" for obj in furniture)
+    periods = Counter(date_bucket(text(obj.get("Datation"))) for obj in furniture)
+
+    location_chart = bar_chart(locations)
+    category_chart = bar_chart(top_with_other(categories))
+    period_chart = bar_chart(periods)
+    coverage = (estimated_count / len(furniture) * 100) if furniture else 0
+
+    page = f"""# Statistiques
+
+<p class="statistics-intro">Vue d’ensemble calculée automatiquement à partir des objets publiés dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
+
+<div class="stat-cards">
+  <article class="stat-card stat-card-primary">
+    <span>Estimation globale</span>
+    <strong>{money(total_low)} – {money(total_high)}</strong>
+    <small>Fourchette indicative cumulée</small>
+  </article>
+  <article class="stat-card">
+    <span>Objets publiés</span>
+    <strong>{len(furniture)}</strong>
+    <small>Fiches prises en compte</small>
+  </article>
+  <article class="stat-card">
+    <span>Objets estimés</span>
+    <strong>{estimated_count}</strong>
+    <small>{coverage:.0f} % du catalogue</small>
+  </article>
+  <article class="stat-card">
+    <span>Catégories</span>
+    <strong>{len(categories)}</strong>
+    <small>Types renseignés</small>
+  </article>
+</div>
+
+!!! note "Lecture des estimations"
+    Les montants sont des estimations documentaires indicatives. Leur addition donne un ordre de grandeur patrimonial, non une valeur de vente garantie.
+
+## Répartition par localisation
+
+<div class="stat-chart" role="img" aria-label="Répartition des objets par localisation">
+{location_chart}
+</div>
+
+## Répartition par catégorie
+
+<div class="stat-chart" role="img" aria-label="Répartition des objets par catégorie">
+{category_chart}
+</div>
+
+## Répartition chronologique
+
+<div class="stat-chart" role="img" aria-label="Répartition des objets par période de datation">
+{period_chart}
+</div>
+
+<p class="notice">Les périodes sont regroupées automatiquement à partir des formulations de la colonne « Datation ». Les datations chevauchant les XIXe et XXe siècles sont classées « Autour de 1900 ».</p>
+"""
+    STATISTICS.write_text(page, encoding="utf-8")
 
 
 def rows_as_dicts(sheet, header_row: int = 3):
@@ -209,15 +353,15 @@ def main() -> int:
         + "\n".join(f"- [{text(o['Titre'])}]({text(o['Identifiant'])}.md) — {text(o['Datation'])}" for o in furniture),
         encoding="utf-8",
     )
+    generate_statistics(furniture)
 
     if warnings:
         print("Avertissements:")
         for warning in warnings:
             print(f"- {warning}")
-    print(f"Catalogue généré: {len(cards)} objet(s), {sum(len(v) for v in photos_by_object.values())} photographie(s) référencée(s).")
+    print(f"Catalogue et statistiques générés: {len(cards)} objet(s), {sum(len(v) for v in photos_by_object.values())} photographie(s) référencée(s).")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
