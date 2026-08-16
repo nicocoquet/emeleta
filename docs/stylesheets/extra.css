@@ -48,8 +48,30 @@ body { color: var(--ink); }
 .gallery figcaption { padding: 0.6rem 0.75rem; color: #6d655d; font-size: 0.72rem; }
 .notice, .empty-state { padding: 0.9rem 1rem; border-left: 3px solid #a65d3f; background: var(--paper); color: #665e56; }
 
+.statistics-intro { max-width: 46rem; color: #665e56; font-size: 1.05rem; }
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+.stat-card { display: flex; min-height: 8.5rem; padding: 1.1rem; flex-direction: column; justify-content: space-between; border: 1px solid var(--line); border-radius: 0.3rem; background: #fff; box-shadow: 0 0.2rem 0.8rem rgba(30, 28, 25, 0.05); }
+.stat-card-primary { color: #fff; background: linear-gradient(135deg, #24352f, #465b52); border-color: #24352f; }
+.stat-card span { color: #746b61; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.64rem; font-weight: 700; }
+.stat-card-primary span, .stat-card-primary small { color: rgba(255, 255, 255, 0.78); }
+.stat-card strong { display: block; margin: 0.35rem 0; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.55rem, 3vw, 2.15rem); font-weight: 500; line-height: 1.1; }
+.stat-card-primary strong { color: #fff; }
+.stat-card small { color: #746b61; }
+.stat-chart { display: grid; gap: 0.9rem; margin: 1rem 0 2.5rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.3rem; background: #fff; }
+.stat-bar-label { display: flex; gap: 1rem; align-items: baseline; justify-content: space-between; margin-bottom: 0.28rem; }
+.stat-bar-label span { line-height: 1.2; }
+.stat-bar-label strong { white-space: nowrap; font-size: 0.8rem; }
+.stat-bar-label small { color: #746b61; font-weight: 400; }
+.stat-bar-track { overflow: hidden; height: 0.7rem; border-radius: 999px; background: #e8e1d7; }
+.stat-bar-track span { display: block; height: 100%; min-width: 0.25rem; border-radius: inherit; background: linear-gradient(90deg, #a65d3f, #c48361); }
+
 @media (max-width: 600px) {
   .gallery img { height: 14rem; }
   .record-grid { grid-template-columns: 1fr; }
+  .stat-cards { grid-template-columns: 1fr 1fr; }
+  .stat-card { min-height: 7.5rem; }
 }
 
+@media (max-width: 420px) {
+  .stat-cards { grid-template-columns: 1fr; }
+}
