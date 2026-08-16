@@ -7,7 +7,7 @@ Site statique MkDocs alimenté par le classeur `inventaire_mobilier.xlsx` et pub
 - `inventaire_mobilier.xlsx` : source des fiches et des légendes ;
 - `photos/` : fichiers photographiques ;
 - `scripts/generate_catalog.py` : génération automatique des pages ;
-- `docs/statistiques.md` : tableau de bord généré automatiquement depuis le classeur ;
+- `docs/statistiques.md` : tableau de bord généré automatiquement depuis le fichier .xlsx ;
 - `docs/` : pages et styles du site ;
 - `.github/workflows/deploy.yml` : publication automatique ;
 - `mkdocs.yml` : configuration de MkDocs.
@@ -25,36 +25,32 @@ La structure multilingue repose sur `mkdocs-static-i18n` :
 
 Pour traduire une page, dupliquez par exemple `docs/catalogue/MOB-001.fr.md` sous les noms `MOB-001.en.md` et `MOB-001.it.md`, puis traduisez leur contenu. Les chemins renseignés dans `mkdocs.yml` restent sans suffixe de langue.
 
-## Créer le dépôt GitHub
+# Mettre à jour le catalogue
 
-1. Sur GitHub, cliquez sur **New repository**.
-2. Nommez-le par exemple `inventaire-mobilier`.
-3. Choisissez **Public** si le site doit être visible de tous.
-4. Ne créez pas de README, de `.gitignore` ou de licence : ils sont déjà fournis ici.
-5. Importez tout le contenu de ce dossier dans la branche `main`.
+Le fichier `inventaire_mobilier.xlsx` est la source du site. Les pages du catalogue sont recréées automatiquement à partir de son contenu.
 
-## Première publication
+## Ajouter un meuble
 
-1. Ouvrez l’onglet **Actions** du dépôt et laissez le workflow « Publier le catalogue » s’exécuter.
-2. Dans **Settings → Pages**, vérifiez que la source est **Deploy from a branch**.
-3. Choisissez la branche `gh-pages` et le dossier `/ (root)`, puis enregistrez.
-4. Le site sera disponible à l’adresse `https://VOTRE-COMPTE.github.io/inventaire-mobilier/`.
+1. Ouvrez `inventaire_mobilier.xlsx`.
+2. Dans la feuille **Mobilier**, ajoutez une ligne au tableau.
+3. Donnez à l’objet un identifiant unique : `MOB-002`, puis `MOB-003`, etc.
+4. Complétez les champs disponibles.
+5. Inscrivez **Oui** dans la colonne **Publié** lorsque la fiche peut apparaître en ligne.
 
-## Mise à jour courante
+Les champs inconnus peuvent rester vides. Il ne faut ni renommer les feuilles, ni modifier les intitulés des colonnes.
 
-1. Modifiez `inventaire_mobilier.xlsx` sans changer son nom.
-2. Ajoutez les nouveaux fichiers dans `photos/`.
-3. Remplacez le classeur et validez les modifications dans la branche `main`.
-4. GitHub reconstruit automatiquement le catalogue.
+## Ajouter plusieurs photographies
 
-Les instructions de saisie sont également présentes dans la troisième feuille du classeur et dans la page « Mode d’emploi » du site.
+1. Renommez les images avec l’identifiant du meuble : `MOB-002-01.jpeg`, `MOB-002-02.jpeg`, etc.
+2. Placez-les dans le dossier `photos` du dépôt.
+3. Dans la feuille **Photos**, ajoutez une ligne par fichier.
+4. Répétez le même identifiant d’objet pour toutes les vues concernées.
+5. Attribuez un ordre et choisissez une seule image principale.
 
-## Tester localement, si nécessaire
+## Publier
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python scripts/generate_catalog.py
-mkdocs serve
-```
+Sur GitHub, remplacez le classeur par sa nouvelle version et ajoutez les nouvelles photographies. Après validation des modifications, l’automatisation reconstruit et republie le site. La publication prend généralement quelques minutes.
+
+## Masquer temporairement une fiche
+
+Passez la valeur **Publié** de **Oui** à **Non**. La ligne demeure dans Excel, mais la fiche disparaît du site lors de la publication suivante.

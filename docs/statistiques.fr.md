@@ -1,7 +1,5 @@
 # Statistiques
 
-<p class="statistics-intro">Vue d’ensemble calculée automatiquement à partir des objets publiés dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
-
 <div class="stat-cards">
   <article class="stat-card stat-card-primary">
     <span>Estimation globale</span>
@@ -53,19 +51,3 @@
 <div class="stat-bar-row"><div class="stat-bar-label"><span>Pendule</span><strong>1 <small>(2 %)</small></strong></div><div class="stat-bar-track"><span style="width:4.5%"></span></div></div>
 <div class="stat-bar-row"><div class="stat-bar-label"><span>Équipement sportif</span><strong>1 <small>(2 %)</small></strong></div><div class="stat-bar-track"><span style="width:4.5%"></span></div></div>
 </div>
-
-## Répartition chronologique
-
-<div class="stat-chart" role="img" aria-label="Répartition des objets par période de datation">
-<div class="stat-bar-row"><div class="stat-bar-label"><span>1945-1969</span><strong>11 <small>(24 %)</small></strong></div><div class="stat-bar-track"><span style="width:100.0%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>1900-1924</span><strong>9 <small>(20 %)</small></strong></div><div class="stat-bar-track"><span style="width:81.8%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>Autour de 1900</span><strong>9 <small>(20 %)</small></strong></div><div class="stat-bar-track"><span style="width:81.8%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>1925-1944</span><strong>7 <small>(16 %)</small></strong></div><div class="stat-bar-track"><span style="width:63.6%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>1970-1999</span><strong>4 <small>(9 %)</small></strong></div><div class="stat-bar-track"><span style="width:36.4%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>1900-1944</span><strong>2 <small>(4 %)</small></strong></div><div class="stat-bar-track"><span style="width:18.2%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>1945-1999</span><strong>1 <small>(2 %)</small></strong></div><div class="stat-bar-track"><span style="width:9.1%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>Depuis 2000</span><strong>1 <small>(2 %)</small></strong></div><div class="stat-bar-track"><span style="width:9.1%"></span></div></div>
-<div class="stat-bar-row"><div class="stat-bar-label"><span>XIXe siècle</span><strong>1 <small>(2 %)</small></strong></div><div class="stat-bar-track"><span style="width:9.1%"></span></div></div>
-</div>
-
-<p class="notice">Les périodes sont regroupées automatiquement à partir des formulations de la colonne « Datation ». Les datations chevauchant les XIXe et XXe siècles sont classées « Autour de 1900 ».</p>
