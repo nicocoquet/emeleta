@@ -1,0 +1,33 @@
+name: Publier le catalogue
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Générer les fiches depuis Excel
+        run: python scripts/generate_catalog.py
+
+      - name: Publier sur GitHub Pages
+        run: mkdocs gh-deploy --force
+

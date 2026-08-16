@@ -1,0 +1,7 @@
+site/
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+inventaire_mobilier.xlsx.inspect.ndjson
+
