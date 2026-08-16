@@ -23,6 +23,7 @@ plugins:
       lang: fr
 
 markdown_extensions:
+  - admonition
   - attr_list
   - md_in_html
   - tables
@@ -35,7 +36,7 @@ extra_css:
 nav:
   - Accueil: index.md
   - Catalogue: catalogue/index.md
+  - Statistiques: statistiques.md
   - Mode d'emploi: mode-emploi.md
 
 copyright: Inventaire personnel — photographies et notices sous la responsabilité de leur propriétaire
-

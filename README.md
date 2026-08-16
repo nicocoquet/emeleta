@@ -7,6 +7,7 @@ Site statique MkDocs alimenté par le classeur `inventaire_mobilier.xlsx` et pub
 - `inventaire_mobilier.xlsx` : source des fiches et des légendes ;
 - `photos/` : fichiers photographiques ;
 - `scripts/generate_catalog.py` : génération automatique des pages ;
+- `docs/statistiques.md` : tableau de bord généré automatiquement depuis le classeur ;
 - `docs/` : pages et styles du site ;
 - `.github/workflows/deploy.yml` : publication automatique ;
 - `mkdocs.yml` : configuration de MkDocs.
@@ -44,4 +45,3 @@ pip install -r requirements.txt
 python scripts/generate_catalog.py
 mkdocs serve
 ```
-
