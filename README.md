@@ -1,6 +1,6 @@
 # Inventaire du mobilier
 
-Site statique MkDocs alimenté par le classeur `inventaire_mobilier.xlsx` et publié sur GitHub Pages.
+Site statique MkDocs alimenté par le classeur `inventaire_mobilier.xlsx` et publié sur GitHub Pages : https://nicocoquet.github.io/inventaire-mobilier/
 
 ## Contenu du projet
 
