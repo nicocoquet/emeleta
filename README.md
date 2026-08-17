@@ -29,7 +29,7 @@ Pour traduire une page, dupliquez par exemple `docs/catalogue/MOB-001.fr.md` sou
 
 Le fichier `inventaire_mobilier.xlsx` est la source du site. Les pages du catalogue sont recréées automatiquement à partir de son contenu.
 
-## Ajouter un meuble
+## Ajouter un objet
 
 1. Ouvrez `inventaire_mobilier.xlsx`.
 2. Dans la feuille **Mobilier**, ajoutez une ligne au tableau.
