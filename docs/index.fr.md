@@ -2,7 +2,7 @@
   <div class="hero-copy">
     <p class="eyebrow">Collection particulière · Toscane</p>
     <h1>Inventaire du mobilier</h1>
-    <p class="hero-intro">Un catalogue évolutif consacré au mobilier, aux objets d’art et aux témoins matériels conservés dans la maison.</p>
+    <p class="hero-intro">Un catalogue évolutif consacré au mobilier et objets d’art conservés dans la maison.</p>
     <a class="hero-link" href="catalogue/">Découvrir le catalogue <span>→</span></a>
   </div>
   <div class="hero-image"><img src="assets/images/MOB-007-04.webp" alt="Pièce choisie de la collection"></div>
