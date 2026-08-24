@@ -1,5 +1,5 @@
-site_name: Emeleta
-site_description: Catalogue illustré du mobilier et livres anciens
+site_name: Inventaire du mobilier
+site_description: Catalogue illustré d'un inventaire de mobilier ancien
 site_author: Nicolas Coquet
 docs_dir: docs
 site_dir: site
@@ -7,8 +7,6 @@ site_dir: site
 theme:
   name: material
   language: fr
-  logo: logo.png
-  favicon: favicon.png
   features:
     - navigation.tabs
     - navigation.sections
@@ -46,7 +44,9 @@ plugins:
           nav_translations:
             Accueil: Home
             Catalogue: Catalogue
+            Bibliothèque: Library
             Statistiques: Statistics
+            Contacts: Contact
           theme:
             language: en
         - locale: it
@@ -55,7 +55,9 @@ plugins:
           nav_translations:
             Accueil: Home
             Catalogue: Catalogo
+            Bibliothèque: Biblioteca
             Statistiques: Statistiche
+            Contacts: Contatti
           theme:
             language: it
   - search:
@@ -77,10 +79,13 @@ extra_css:
 
 extra_javascript:
   - javascripts/catalogue-filters.js
+  - javascripts/contact-form.js
 
 nav:
   - Accueil: index.md
   - Catalogue: catalogue/index.md
+  - Bibliothèque: bibliotheque/index.md
   - Statistiques: statistiques.md
+  - Contacts: contacts.md
 
-copyright: Aura Fossati — photographies et notices sous la responsabilité de leur propriétaire
+copyright: Inventaire personnel — photographies et notices sous la responsabilité de leur propriétaire
