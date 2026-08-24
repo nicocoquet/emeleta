@@ -1,7 +1,7 @@
 <header class="contact-heading">
-  <p class="eyebrow">Écrire à la collection</p>
-  <h1>Contacts</h1>
-  <p>Une question, une précision ou une piste de recherche concernant un objet de l’inventaire&nbsp;? Laissez-nous un message.</p>
+  <p class="eyebrow">Nous écrire</p>
+  <h1>Contact</h1>
+  <p>Vous pouvez nous écrire en italien, français, anglais et espagnol.</p>
 </header>
 
 <form class="contact-form" data-contact-form data-recipient="">
@@ -22,7 +22,7 @@
     <textarea id="contact-message" name="message" rows="8" required></textarea>
   </div>
   <div class="contact-actions contact-field-wide">
-    <button type="submit">Envoyer le message <span>→</span></button>
+    <button type="submit">Envoyer<span>→</span></button>
     <p class="contact-status" data-contact-status aria-live="polite">L’adresse de destination sera configurée lors de la prochaine étape.</p>
   </div>
 </form>
