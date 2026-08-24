@@ -7,7 +7,7 @@ site_dir: site
 theme:
   name: material
   language: fr
-  favicon: assets/images/favicon.png
+  favicon: docs/favicon.png
   features:
     - navigation.tabs
     - navigation.sections
