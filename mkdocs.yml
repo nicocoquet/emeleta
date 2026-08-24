@@ -1,5 +1,5 @@
 site_name: Inventaire du mobilier
-site_description: Catalogue du mobilier ancien - Toscane
+site_description: Catalogue illustré d'un inventaire de mobilier ancien
 site_author: Nicolas Coquet
 docs_dir: docs
 site_dir: site
@@ -45,7 +45,6 @@ plugins:
             Accueil: Home
             Catalogue: Catalogue
             Statistiques: Statistics
-            Mode d'emploi: User guide
           theme:
             language: en
         - locale: it
@@ -55,7 +54,6 @@ plugins:
             Accueil: Home
             Catalogue: Catalogo
             Statistiques: Statistiche
-            Mode d'emploi: Guida
           theme:
             language: it
   - search:
@@ -75,10 +73,12 @@ markdown_extensions:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/catalogue-filters.js
+
 nav:
   - Accueil: index.md
   - Catalogue: catalogue/index.md
   - Statistiques: statistiques.md
-  - Mode d'emploi: mode-emploi.md
 
 copyright: Inventaire personnel — photographies et notices sous la responsabilité de leur propriétaire
