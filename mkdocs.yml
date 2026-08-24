@@ -7,8 +7,8 @@ site_dir: site
 theme:
   name: material
   language: fr
-  logo: favicon.png
-  favicon: favicon.png
+  logo: assets/images/favicon.png
+  favicon: assets/images/favicon.png
   features:
     - navigation.tabs
     - navigation.sections
