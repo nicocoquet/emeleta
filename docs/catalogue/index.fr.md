@@ -1,7 +1,6 @@
 <div class="catalogue-heading">
-  <p class="eyebrow">Collection complète</p>
-  <h1>Catalogue</h1>
-  <p>Explorez les 84 lots documentés et affinez la sélection par localisation ou type d’objet.</p>
+  <p class="eyebrow">Mobilier & objets d’art</p>
+  <h1>Inventaire</h1>
 </div>
 
 <div class="collection-summary catalogue-summary">
