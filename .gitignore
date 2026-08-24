@@ -4,4 +4,4 @@ __pycache__/
 .DS_Store
 .venv/
 inventaire_mobilier.xlsx.inspect.ndjson
-
+docs/assets/images/
