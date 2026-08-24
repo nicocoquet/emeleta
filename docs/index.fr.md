@@ -19,11 +19,7 @@
 
   <article class="collection-portal collection-portal-furniture">
     <div class="collection-portal-visual">
-      <div class="hero-image hero-slideshow" style="--slide-count:5" aria-label="Sélection de pièces de la collection"><img src="assets/images/MOB-001-01.jpeg" alt="Lit italien en fer peint et incrustations de nacre" style="--slide-index:0">
-<img src="assets/images/MOB-002-01.jpeg" alt="Pendule Art déco aux deux lévriers" style="--slide-index:1">
-<img src="assets/images/MOB-003-01.jpeg" alt="Lanterne-tempête en tôle noire" style="--slide-index:2">
-<img src="assets/images/MOB-004-01.jpeg" alt="Lanterne de voiture ou de fiacre" style="--slide-index:3">
-<img src="assets/images/MOB-005-01.jpeg" alt="Raquette de tennis Persenico « Derby » avec presse" style="--slide-index:4"></div>
+      <div class="hero-image hero-slideshow" style="--slide-count:5" aria-label="Sélection de pièces de la collection"><img src="assets/images/MOB-007-04.jpeg" alt="Mobilier" style="--slide-index:0">></div>
     </div>
     <div class="collection-portal-copy">
       <p class="eyebrow">Mobilier & objets d’art</p>
