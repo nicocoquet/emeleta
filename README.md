@@ -2,7 +2,7 @@
 
 Site statique MkDocs alimenté par le classeur `inventaire_mobilier.xlsx` et publié sur GitHub Pages : https://nicocoquet.github.io/inventaire-mobilier/
 
-## Ajouter un meuble
+## Ajouter un objet
 
 1. Dans la feuille **Mobilier**, ajoutez une ligne au tableau.
 2. Attribuez un identifiant unique et séquentiel (`MOB-002`, `MOB-003`, etc.).
