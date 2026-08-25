@@ -25,6 +25,38 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/statistiques/"/>
     </url>
     <url>
+        <loc>Nonebibliotheque/BIB-001/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-001/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-001/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-001/"/>
+    </url>
+    <url>
+        <loc>Nonebibliotheque/BIB-002/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-002/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-002/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-002/"/>
+    </url>
+    <url>
+        <loc>Nonebibliotheque/BIB-003/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-003/"/>
+    </url>
+    <url>
+        <loc>Nonebibliotheque/BIB-004/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-004/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-004/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-004/"/>
+    </url>
+    <url>
         <loc>Nonebibliotheque/</loc>
         <lastmod>2026-08-25</lastmod>
         <changefreq>daily</changefreq>
@@ -945,6 +977,38 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/statistiques/"/>
     </url>
     <url>
+        <loc>Noneen/bibliotheque/BIB-001/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-001/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-001/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-001/"/>
+    </url>
+    <url>
+        <loc>Noneen/bibliotheque/BIB-002/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-002/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-002/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-002/"/>
+    </url>
+    <url>
+        <loc>Noneen/bibliotheque/BIB-003/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-003/"/>
+    </url>
+    <url>
+        <loc>Noneen/bibliotheque/BIB-004/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-004/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-004/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-004/"/>
+    </url>
+    <url>
         <loc>Noneen/bibliotheque/</loc>
         <lastmod>2026-08-25</lastmod>
         <changefreq>daily</changefreq>
@@ -1863,6 +1927,38 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/statistiques/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/statistiques/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="Nonestatistiques/"/>
+    </url>
+    <url>
+        <loc>Noneit/bibliotheque/BIB-001/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-001/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-001/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-001/"/>
+    </url>
+    <url>
+        <loc>Noneit/bibliotheque/BIB-002/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-002/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-002/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-002/"/>
+    </url>
+    <url>
+        <loc>Noneit/bibliotheque/BIB-003/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-003/"/>
+    </url>
+    <url>
+        <loc>Noneit/bibliotheque/BIB-004/</loc>
+        <lastmod>2026-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/BIB-004/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/BIB-004/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/BIB-004/"/>
     </url>
     <url>
         <loc>Noneit/bibliotheque/</loc>

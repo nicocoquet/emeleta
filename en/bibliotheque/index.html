@@ -52,6 +52,8 @@
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
+      <link rel="stylesheet" href="../../stylesheets/bibliotheque.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -513,11 +515,32 @@
 
 
 <div class="catalogue-heading">
-  <p class="eyebrow">Livres anciens</p>
-  <h1>Bibliothèque</h1>
+<p class="eyebrow">Emeleta · Bibliothèque</p>
+<h1>Bibliothèque</h1>
+<p>Catalogue des ouvrages conservés à Emeleta. Les filtres peuvent être combinés.</p>
 </div>
 
-<div class="empty-collection" aria-label="Bibliothèque en préparation"></div>
+<form class="catalog-filters library-filters" data-catalog-filters>
+<div class="catalog-filter catalog-filter-search"><label for="catalog-search">Recherche</label><input id="catalog-search" type="search" name="q" placeholder="Titre, auteur, mot-clé…" autocomplete="off"></div>
+<div class="catalog-filter"><label for="filter-author">Auteur / éditeur scientifique</label><select id="filter-author" name="author" data-filter="author"><option value="">Tous</option><option value="Anonyme">Anonyme</option><option value="Fernand Braudel">Fernand Braudel</option><option value="Mario Torelli">Mario Torelli</option><option value="Pierre Gros">Pierre Gros</option></select></div>
+<div class="catalog-filter"><label for="filter-subject">Sujet</label><select id="filter-subject" name="subject" data-filter="subject"><option value="">Tous</option><option value="Archéologie">Archéologie</option><option value="Histoire">Histoire</option><option value="Méditerranée">Méditerranée</option><option value="Patrimoine">Patrimoine</option><option value="Urbanisme">Urbanisme</option><option value="Voyage">Voyage</option></select></div>
+<div class="catalog-filter"><label for="filter-place">Lieu</label><select id="filter-place" name="place" data-filter="place"><option value="">Tous</option><option value="Florence">Florence</option><option value="Italie">Italie</option><option value="Méditerranée">Méditerranée</option><option value="Rome">Rome</option><option value="Toscane">Toscane</option></select></div>
+<div class="catalog-filter"><label for="filter-period">Période</label><select id="filter-period" name="period" data-filter="period"><option value="">Tous</option><option value="Antiquité romaine">Antiquité romaine</option><option value="Époque moderne">Époque moderne</option><option value="XIXe siècle">XIXe siècle</option></select></div>
+<div class="catalog-filter"><label for="filter-publication_date">Date de publication</label><select id="filter-publication_date" name="publication_date" data-filter="publication_date"><option value="">Tous</option><option value="1946–1980">1946–1980</option><option value="1981–2000">1981–2000</option><option value="Avant 1900">Avant 1900</option></select></div>
+<div class="catalog-filter"><label for="filter-language">Langue</label><select id="filter-language" name="language" data-filter="language"><option value="">Tous</option><option value="Français">Français</option><option value="Italien">Italien</option></select></div>
+<div class="catalog-filter"><label for="filter-document_type">Type de document</label><select id="filter-document_type" name="document_type" data-filter="document_type"><option value="">Tous</option><option value="Guide">Guide</option><option value="Monographie">Monographie</option><option value="Ouvrage collectif">Ouvrage collectif</option></select></div>
+<button class="catalog-reset" type="reset">Réinitialiser</button>
+<p class="catalog-result"><strong data-result-count>4</strong> ouvrage(s)</p>
+</form>
+
+<div class="catalog-grid book-grid" data-catalog-grid>
+<article class="catalog-card book-card" data-author="Fernand Braudel" data-subject="Histoire||Méditerranée" data-place="Méditerranée" data-period="Époque moderne" data-publication-date="1946–1980" data-language="Français" data-document-type="Monographie"><a href="BIB-001/"><div class="card-placeholder book-placeholder">Sans photographie</div></a><div class="catalog-card-body"><div class="card-lot"><span>BIB-001</span><span>Monographie</span></div><h2><a href="BIB-001/">La Méditerranée et le monde méditerranéen à l&#x27;époque de Philippe II</a></h2><p class="book-author">Fernand Braudel</p><p class="card-date">Armand Colin, 1949</p></div></article>
+<article class="catalog-card book-card" data-author="Fernand Braudel" data-subject="Histoire||Méditerranée" data-place="Méditerranée" data-period="Époque moderne" data-publication-date="1946–1980" data-language="Français" data-document-type="Monographie"><a href="BIB-002/"><div class="card-placeholder book-placeholder">Sans photographie</div></a><div class="catalog-card-body"><div class="card-lot"><span>BIB-002</span><span>Monographie</span></div><h2><a href="BIB-002/">La Méditerranée et le monde méditerranéen à l&#x27;époque de Philippe II</a></h2><p class="book-author">Fernand Braudel</p><p class="card-date">Armand Colin, 1949</p></div></article>
+<article class="catalog-card book-card" data-author="Pierre Gros||Mario Torelli" data-subject="Archéologie||Urbanisme" data-place="Italie||Rome" data-period="Antiquité romaine" data-publication-date="1981–2000" data-language="Italien" data-document-type="Ouvrage collectif"><a href="BIB-003/"><div class="card-placeholder book-placeholder">Sans photographie</div></a><div class="catalog-card-body"><div class="card-lot"><span>BIB-003</span><span>Ouvrage collectif</span></div><h2><a href="BIB-003/">Storia dell&#x27;urbanistica</a></h2><p class="book-author">Pierre Gros · Mario Torelli</p><p class="card-date">Laterza, 1988</p></div></article>
+<article class="catalog-card book-card" data-author="Anonyme" data-subject="Voyage||Patrimoine" data-place="Italie||Toscane||Florence" data-period="XIXe siècle" data-publication-date="Avant 1900" data-language="Italien" data-document-type="Guide"><a href="BIB-004/"><div class="card-placeholder book-placeholder">Sans photographie</div></a><div class="catalog-card-body"><div class="card-lot"><span>BIB-004</span><span>Guide</span></div><h2><a href="BIB-004/">Guida di Firenze</a></h2><p class="book-author">Anonyme</p><p class="card-date">Tipografia Rossi, 1898</p></div></article>
+</div>
+
+<p class="catalog-empty" data-catalog-empty hidden>Aucun ouvrage ne correspond à ces critères.</p>
 
 
 
