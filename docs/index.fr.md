@@ -1,5 +1,4 @@
 <header class="home-intro">
-  <p class="eyebrow">Collection particulière · Toscane</p>
   <h1>Emeleta</h1>
   <p>Trequanda, SI</p>
 </header>
