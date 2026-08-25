@@ -1,12 +1,6 @@
 <div class="catalogue-heading">
-  <p class="eyebrow">Mobilier & objets d’art</p>
-  <h1>Inventaire</h1>
-</div>
-
-<div class="collection-summary catalogue-summary">
-  <div><span>Lots documentés</span><strong>84</strong><small>107 items</small></div>
-  <div><span>Estimation globale</span><strong>13 085 € – 30 160 €</strong></div>
-  <div><span>Types d’objet</span><strong>44</strong></div>
+  <p class="eyebrow">Collection complète</p>
+  <h1>Catalogue</h1>
 </div>
 
 <form class="catalog-filters" data-catalog-filters>
