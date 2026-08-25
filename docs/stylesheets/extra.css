@@ -66,7 +66,29 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .eyebrow, .record-kicker { margin: 0; color: var(--wine); font-size: .62rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
 
 /* Accueil */
-.home-intro { max-width: 62rem; margin: 1.2rem auto 4rem; text-align: center; }
+.home-intro {
+  --home-crest-opacity: .11;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 15rem;
+  max-width: 62rem;
+  margin: 1.2rem auto 4rem;
+  padding: 3.5rem 2rem;
+  overflow: hidden;
+  place-content: center;
+  text-align: center;
+}
+.home-intro::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: url("../assets/images/ecusson.png") center / min(31rem, 82vw) auto no-repeat;
+  content: "";
+  opacity: var(--home-crest-opacity);
+  pointer-events: none;
+}
+[data-md-color-scheme="slate"] .home-intro::before { filter: invert(1); }
 .home-intro h1 { margin: .8rem 0 1.1rem; font-size: clamp(3rem, 6vw, 6rem); }
 .home-intro > p:last-child { max-width: 43rem; margin: 0 auto; color: var(--muted); font-family: var(--serif); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.45; }
 .collection-portals { display: grid; max-width: 78rem; margin: 0 auto; gap: 1.25rem; }
@@ -227,7 +249,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 }
 @media (max-width: 600px) {
   .md-content__inner { padding: 1.4rem 1rem 3.5rem; }
-  .home-intro { margin: .75rem auto 2.5rem; text-align: left; }
+  .home-intro { min-height: 12rem; margin: .75rem auto 2.5rem; padding: 2.5rem 1rem; }
   .home-intro h1 { font-size: 3.25rem; }
   .collection-portals { margin-right: -1rem; margin-left: -1rem; gap: 1rem; }
   .collection-portal { border-right: 0; border-left: 0; }
