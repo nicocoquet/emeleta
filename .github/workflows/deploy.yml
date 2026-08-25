@@ -28,8 +28,11 @@ jobs:
       - name: Installer les dépendances
         run: python -m pip install -r requirements.txt
 
-      - name: Générer les fiches depuis Excel
+      - name: Générer le catalogue mobilier
         run: python scripts/generate_catalog.py
+
+      - name: Générer la bibliothèque
+        run: python scripts/generate_bibliotheque.py
 
       - name: Vérifier la construction du site
         run: mkdocs build
