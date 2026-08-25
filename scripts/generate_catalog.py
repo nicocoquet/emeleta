@@ -274,13 +274,29 @@ def main() -> int:
         photos = photos_by_object.get(object_id, [])
         available = []
         for photo in photos:
-            filename = Path(text(photo["Fichier"])).name
-            source = SOURCE_PHOTOS / filename
-            if source.exists():
-                shutil.copy2(source, SITE_IMAGES / filename)
-                available.append(photo)
-            else:
-                warnings.append(f"{object_id}: photographie introuvable: {filename}")
+    raw_filename = text(photo["Fichier"]).strip()
+
+    if not raw_filename:
+        warnings.append(
+            f"{object_id}: nom de photographie vide ; ligne ignorée."
+        )
+        continue
+
+    filename = Path(raw_filename).name
+    source = SOURCE_PHOTOS / filename
+
+    if source.is_file():
+        shutil.copy2(source, SITE_IMAGES / filename)
+        available.append(photo)
+    elif source.is_dir():
+        warnings.append(
+            f"{object_id}: le chemin photographique désigne un dossier : "
+            f"{raw_filename}"
+        )
+    else:
+        warnings.append(
+            f"{object_id}: photographie introuvable : {filename}"
+        )
 
         cover = next((p for p in available if text(p["Image principale"]).lower() in {"oui", "yes", "true", "1"}), available[0] if available else None)
         category = text(obj["Catégorie"]) or "Non classé"
