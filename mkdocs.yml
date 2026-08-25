@@ -78,6 +78,7 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/bibliotheque.css
 
 extra_javascript:
   - javascripts/catalogue-filters.js

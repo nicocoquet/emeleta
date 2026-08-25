@@ -6,6 +6,9 @@
       .toLocaleLowerCase("fr")
       .trim();
 
+  const splitFacetValues = (value) =>
+    (value || "").split("||").map((item) => item.trim()).filter(Boolean);
+
   const initializeCatalogue = () => {
     const form = document.querySelector("[data-catalog-filters]");
     const grid = document.querySelector("[data-catalog-grid]");
@@ -13,38 +16,47 @@
     form.dataset.ready = "true";
 
     const query = form.elements.q;
-    const location = form.elements.location;
-    const category = form.elements.category;
     const count = form.querySelector("[data-result-count]");
     const empty = document.querySelector("[data-catalog-empty]");
     const cards = [...grid.querySelectorAll(".catalog-card")];
     const parameters = new URLSearchParams(window.location.search);
 
-    query.value = parameters.get("q") || "";
-    location.value = parameters.get("location") || "";
-    category.value = parameters.get("category") || "";
+    const filters = [...form.querySelectorAll("select[name]")]
+      .filter((field) => field.name !== "q")
+      .map((field) => ({ field, name: field.dataset.filter || field.name }));
+
+    if (query) query.value = parameters.get("q") || "";
+    filters.forEach(({ field, name }) => {
+      field.value = parameters.get(name) || "";
+    });
 
     const update = () => {
-      const searchValue = normalize(query.value);
+      const searchValue = query ? normalize(query.value) : "";
       let visible = 0;
 
       cards.forEach((card) => {
         const matchesQuery = !searchValue || normalize(card.textContent).includes(searchValue);
-        const matchesLocation = !location.value || card.dataset.location === location.value;
-        const matchesCategory = !category.value || card.dataset.category === category.value;
-        const matches = matchesQuery && matchesLocation && matchesCategory;
+        const matchesFacets = filters.every(({ field, name }) => {
+          if (!field.value) return true;
+          const attributeName = `data-${name.replaceAll("_", "-")}`;
+          const values = splitFacetValues(card.getAttribute(attributeName));
+          return values.includes(field.value);
+        });
+        const matches = matchesQuery && matchesFacets;
         card.hidden = !matches;
         if (matches) visible += 1;
       });
 
-      count.textContent = visible;
-      empty.hidden = visible !== 0;
-      form.classList.toggle("has-active-filters", Boolean(query.value || location.value || category.value));
+      if (count) count.textContent = visible;
+      if (empty) empty.hidden = visible !== 0;
+      const active = Boolean((query && query.value) || filters.some(({ field }) => field.value));
+      form.classList.toggle("has-active-filters", active);
 
       const nextParameters = new URLSearchParams();
-      if (query.value) nextParameters.set("q", query.value);
-      if (location.value) nextParameters.set("location", location.value);
-      if (category.value) nextParameters.set("category", category.value);
+      if (query && query.value) nextParameters.set("q", query.value);
+      filters.forEach(({ field, name }) => {
+        if (field.value) nextParameters.set(name, field.value);
+      });
       const nextUrl = `${window.location.pathname}${nextParameters.size ? `?${nextParameters}` : ""}${window.location.hash}`;
       window.history.replaceState({}, "", nextUrl);
     };

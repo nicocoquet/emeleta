@@ -1,0 +1,41 @@
+/* Bibliothèque Emeleta */
+.library-filters {
+  grid-template-columns: repeat(4, minmax(10rem, 1fr));
+}
+.library-filters .catalog-filter-search { grid-column: span 2; }
+.library-filters .catalog-reset { align-self: end; }
+.book-card > a > img,
+.book-card .book-placeholder {
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  padding: .65rem;
+  background: var(--image-ground);
+}
+.book-author {
+  min-height: 2.8em;
+  margin: .35rem 0 .3rem;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: .92rem;
+  line-height: 1.35;
+}
+.book-hero .book-cover img {
+  object-fit: contain;
+  padding: 1rem;
+  background: var(--image-ground);
+}
+.book-photo-grid img {
+  object-fit: contain;
+  background: var(--image-ground);
+}
+@media (max-width: 76rem) {
+  .library-filters { grid-template-columns: repeat(3, minmax(10rem, 1fr)); }
+}
+@media (max-width: 54rem) {
+  .library-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .library-filters .catalog-filter-search { grid-column: 1 / -1; }
+}
+@media (max-width: 36rem) {
+  .library-filters { grid-template-columns: 1fr; }
+  .library-filters .catalog-filter-search { grid-column: auto; }
+}
