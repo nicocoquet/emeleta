@@ -7,7 +7,7 @@
 <div class="collection-portals">
   <article class="collection-portal collection-portal-library">
     <a class="collection-portal-image" href="bibliotheque/" aria-label="Consulter la bibliothèque">
-      <img src="assets/images/MOB-034-01.jpeg" alt="Bibliothèque">
+      <img src="assets/images/bibliotheque.webp" alt="Bibliothèque">
     </a>
     <div class="collection-portal-copy">
       <p class="eyebrow">Livres anciens</p>
@@ -19,7 +19,7 @@
 
   <article class="collection-portal collection-portal-furniture">
     <a class="collection-portal-image" href="catalogue/" aria-label="Consulter le catalogue du mobilier">
-      <img src="assets/images/MOB-007-04.jpeg" alt="Inventaire">
+      <img src="assets/images/inventaire.webp" alt="Inventaire">
     </a>
     <div class="collection-portal-copy">
       <p class="eyebrow">Mobilier & objets d’art</p>
