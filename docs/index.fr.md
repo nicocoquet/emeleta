@@ -18,9 +18,9 @@
   </article>
 
   <article class="collection-portal collection-portal-furniture">
-    <div class="collection-portal-visual">
-      <div class="hero-image hero-slideshow" style="--slide-count:5" aria-label="Sélection de pièces de la collection"><img src="assets/images/MOB-007-04.jpeg" alt="Mobilier" style="--slide-index:0">></div>
-    </div>
+    <a class="collection-portal-image" href="catalogue/" aria-label="Consulter le catalogue du mobilier">
+      <img src="assets/images/MOB-007-04.jpeg" alt="Inventaire">
+    </a>
     <div class="collection-portal-copy">
       <p class="eyebrow">Mobilier & objets d’art</p>
       <h2>Inventaire</h2>
