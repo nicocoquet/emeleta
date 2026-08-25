@@ -128,7 +128,7 @@ def top_with_other(data: Counter, limit: int = 12) -> Counter:
     if len(ordered) <= limit:
         return data
     result = Counter(dict(ordered[:limit]))
-    result["Autres catÃ©gories"] = sum(count for _, count in ordered[limit:])
+    result["Autres catégories"] = sum(count for _, count in ordered[limit:])
     return result
 
 
@@ -145,7 +145,7 @@ def generate_statistics(furniture: list[dict]) -> None:
     )
 
     locations = Counter(text(obj.get("Localisation")) or "Localisation Ã  prÃ©ciser" for obj in furniture)
-    categories = Counter(text(obj.get("CatÃ©gorie")) or "Non classÃ©" for obj in furniture)
+    categories = Counter(text(obj.get("Catégorie")) or "Non classÃ©" for obj in furniture)
     periods = Counter(date_bucket(text(obj.get("Datation"))) for obj in furniture)
 
     location_chart = bar_chart(locations)
@@ -156,7 +156,7 @@ def generate_statistics(furniture: list[dict]) -> None:
 
     page = f"""# Statistiques
 
-<p class="statistics-intro">Vue dâ€™ensemble calculÃ©e automatiquement Ã  partir des objets publiÃ©s dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
+<p class="statistics-intro">Vue dâ€™ensemble calculÃ©e automatiquement Ã  partir des objets publiés dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
 
 <div class="stat-cards">
   <article class="stat-card stat-card-primary">
@@ -165,7 +165,7 @@ def generate_statistics(furniture: list[dict]) -> None:
     <small>Fourchette indicative cumulÃ©e</small>
   </article>
   <article class="stat-card">
-    <span>Lots publiÃ©s</span>
+    <span>Lots publiés</span>
     <strong>{len(furniture)}</strong>
     <small>{item_count} item(s) inventoriÃ©(s)</small>
   </article>
@@ -175,7 +175,7 @@ def generate_statistics(furniture: list[dict]) -> None:
     <small>{coverage:.0f} % du catalogue</small>
   </article>
   <article class="stat-card">
-    <span>CatÃ©gories</span>
+    <span>Catégories</span>
     <strong>{len(categories)}</strong>
     <small>Types renseignÃ©s</small>
   </article>
@@ -190,9 +190,9 @@ def generate_statistics(furniture: list[dict]) -> None:
 {location_chart}
 </div>
 
-## RÃ©partition par catÃ©gorie
+## Répartition par catégorie
 
-<div class="stat-chart" role="img" aria-label="RÃ©partition des objets par catÃ©gorie">
+<div class="stat-chart" role="img" aria-label="RÃ©partition des objets par catégorie">
 {category_chart}
 </div>
 
@@ -229,7 +229,7 @@ def main() -> int:
     wb = load_workbook(WORKBOOK, data_only=True)
     require_columns(
         {text(c.value) for c in wb["Mobilier"][3]},
-        {"Identifiant", "Titre", "CatÃ©gorie", "Description", "PubliÃ©"},
+        {"Identifiant", "Titre", "Catégorie", "Description", "Publié"},
         "Mobilier",
     )
     require_columns(
@@ -238,7 +238,7 @@ def main() -> int:
         "Photos",
     )
 
-    furniture = [r for r in rows_as_dicts(wb["Mobilier"]) if text(r["PubliÃ©"]).lower() in {"oui", "yes", "true", "1"}]
+    furniture = [r for r in rows_as_dicts(wb["Mobilier"]) if text(r["Publié"]).lower() in {"oui", "yes", "true", "1"}]
     photo_rows = list(rows_as_dicts(wb["Photos"]))
     photos_by_object = defaultdict(list)
     for photo in photo_rows:
@@ -269,7 +269,7 @@ def main() -> int:
         object_id = text(obj["Identifiant"])
         title = text(obj["Titre"])
         if not object_id or not title:
-            warnings.append("Une ligne publiÃ©e sans identifiant ou sans titre a Ã©tÃ© ignorÃ©e.")
+            warnings.append("Une ligne publiée sans identifiant ou sans titre a Ã©tÃ© ignorÃ©e.")
             continue
 
         photos = photos_by_object.get(object_id, [])
@@ -293,7 +293,7 @@ def main() -> int:
                 warnings.append(f"{object_id}: photographie introuvable: {filename}")
 
         cover = next((p for p in available if text(p["Image principale"]).lower() in {"oui", "yes", "true", "1"}), available[0] if available else None)
-        category = text(obj["CatÃ©gorie"]) or "Non classÃ©"
+        category = text(obj["Catégorie"]) or "Non classÃ©"
         categories[category] += 1
 
         item_quantity = quantity(obj)
@@ -303,7 +303,7 @@ def main() -> int:
         estimate = lot_estimate
 
         metadata = [
-            ("CatÃ©gorie", category),
+            ("Catégorie", category),
             ("Origine", text(obj.get("Origine"))),
             ("MatÃ©riaux", text(obj.get("MatÃ©riaux"))),
             ("Dimensions", text(obj.get("Dimensions"))),
@@ -423,7 +423,7 @@ def main() -> int:
 <div class="collection-summary">
   <div><span>Lots documentÃ©s</span><strong>{len(cards)}</strong><small>{total_items} items</small></div>
   <div><span>Estimation globale</span><strong>{money(total_low)} â€“ {money(total_high)}</strong></div>
-  <div><span>CatÃ©gories</span><strong>{len(categories)}</strong></div>
+  <div><span>Catégories</span><strong>{len(categories)}</strong></div>
 </div>
 
 <div class="section-heading"><p class="eyebrow">SÃ©lection complÃ¨te</p><h2>Les lots de la collection</h2></div>
@@ -431,12 +431,12 @@ def main() -> int:
 <p class="category-line">{category_text}</p>
 
 <div class="catalog-grid">
-{''.join(cards) if cards else '<p class="empty-state">Aucun objet publiÃ©.</p>'}
+{''.join(cards) if cards else '<p class="empty-state">Aucun objet publié.</p>'}
 </div>
 """
     (DOCS / "index.fr.md").write_text(index, encoding="utf-8")
     (CATALOG / "index.fr.md").write_text(
-        "# Catalogue\n\nToutes les fiches publiÃ©es apparaissent ci-dessous. Utilisez la recherche en haut de la page pour retrouver un objet, une matiÃ¨re, une Ã©poque ou une localisation.\n\n"
+        "# Catalogue\n\nToutes les fiches publiées apparaissent ci-dessous. Utilisez la recherche en haut de la page pour retrouver un objet, une matiÃ¨re, une Ã©poque ou une localisation.\n\n"
         + "\n".join(f"- [{text(o['Titre'])}]({text(o['Identifiant'])}.md) â€” {text(o['Datation'])}" for o in furniture),
         encoding="utf-8",
     )
