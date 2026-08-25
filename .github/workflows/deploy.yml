@@ -12,22 +12,32 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Installer Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Installer les dépendances
-        run: pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt
 
       - name: Générer les fiches depuis Excel
         run: python scripts/generate_catalog.py
 
+      - name: Vérifier la construction du site
+        run: mkdocs build
+
+      - name: Configurer Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Publier sur GitHub Pages
         run: mkdocs gh-deploy --force
-
