@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -38,9 +41,11 @@ jobs:
         run: mkdocs build
 
       - name: Configurer Git
+        if: github.event_name != 'pull_request'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Publier sur GitHub Pages
+        if: github.event_name != 'pull_request'
         run: mkdocs gh-deploy --force
