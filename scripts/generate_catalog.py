@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère les pages MkDocs depuis inventaire_mobilier.xlsx."""
+"""GÃ©nÃ¨re les pages MkDocs depuis inventaire_mobilier.xlsx."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def money(value) -> str:
     if value in (None, ""):
         return ""
     try:
-        return f"{float(value):,.0f} €".replace(",", " ")
+        return f"{float(value):,.0f} â‚¬".replace(",", "â€¯")
     except (TypeError, ValueError):
         return text(value)
 
@@ -51,17 +51,17 @@ def number(value) -> float | None:
 
 
 def quantity(obj: dict) -> int:
-    value = number(obj.get("Quantité"))
+    value = number(obj.get("QuantitÃ©"))
     return max(1, int(value)) if value is not None else 1
 
 
 def unit_value(obj: dict, side: str) -> float | None:
-    return number(obj.get(f"Estimation unitaire {side} (€)")) or number(obj.get(f"Estimation {side} (€)"))
+    return number(obj.get(f"Estimation unitaire {side} (â‚¬)")) or number(obj.get(f"Estimation {side} (â‚¬)"))
 
 
 def lot_value(obj: dict, side: str) -> float | None:
-    """Retourne le total du lot, même si le moteur XLSX n'a pas mis en cache la formule."""
-    total = number(obj.get(f"Estimation du lot {side} (€)"))
+    """Retourne le total du lot, mÃªme si le moteur XLSX n'a pas mis en cache la formule."""
+    total = number(obj.get(f"Estimation du lot {side} (â‚¬)"))
     if total is not None:
         return total
     unit = unit_value(obj, side)
@@ -69,17 +69,17 @@ def lot_value(obj: dict, side: str) -> float | None:
 
 
 def estimate_range(low, high) -> str:
-    return " – ".join(v for v in [money(low), money(high)] if v) or "Non renseignée"
+    return " â€“ ".join(v for v in [money(low), money(high)] if v) or "Non renseignÃ©e"
 
 
 def date_bucket(value: str) -> str:
-    """Regroupe les datations libres du tableur en périodes lisibles."""
-    label = value.lower().replace("–", "-").replace("—", "-")
+    """Regroupe les datations libres du tableur en pÃ©riodes lisibles."""
+    label = value.lower().replace("â€“", "-").replace("â€”", "-")
     years = [int(year) for year in re.findall(r"\b(1[89]\d{2}|20\d{2})\b", label)]
     if years:
         midpoint = sum(years) / len(years)
         if midpoint < 1900:
-            return "XIXe siècle"
+            return "XIXe siÃ¨cle"
         if midpoint < 1925:
             return "1900-1924"
         if midpoint < 1945:
@@ -92,19 +92,19 @@ def date_bucket(value: str) -> str:
     if "xixe" in label and "xxe" in label:
         return "Autour de 1900"
     if "xixe" in label:
-        return "XIXe siècle"
-    if "première moitié du xxe" in label or "début du xxe" in label:
+        return "XIXe siÃ¨cle"
+    if "premiÃ¨re moitiÃ© du xxe" in label or "dÃ©but du xxe" in label:
         return "1900-1944"
     if "milieu du xxe" in label:
         return "1945-1969"
-    if "seconde moitié du xxe" in label:
+    if "seconde moitiÃ© du xxe" in label:
         return "1945-1999"
     if "xxe" in label:
-        return "XXe siècle (large)"
-    return "Datation à préciser"
+        return "XXe siÃ¨cle (large)"
+    return "Datation Ã  prÃ©ciser"
 
 
-def bar_chart(data: Counter, empty_label: str = "Aucune donnée") -> str:
+def bar_chart(data: Counter, empty_label: str = "Aucune donnÃ©e") -> str:
     if not data:
         return f'<p class="empty-state">{html.escape(empty_label)}</p>'
     maximum = max(data.values())
@@ -128,7 +128,7 @@ def top_with_other(data: Counter, limit: int = 12) -> Counter:
     if len(ordered) <= limit:
         return data
     result = Counter(dict(ordered[:limit]))
-    result["Autres catégories"] = sum(count for _, count in ordered[limit:])
+    result["Autres catÃ©gories"] = sum(count for _, count in ordered[limit:])
     return result
 
 
@@ -144,8 +144,8 @@ def generate_statistics(furniture: list[dict]) -> None:
         or lot_value(obj, "haute") is not None
     )
 
-    locations = Counter(text(obj.get("Localisation")) or "Localisation à préciser" for obj in furniture)
-    categories = Counter(text(obj.get("Catégorie")) or "Non classé" for obj in furniture)
+    locations = Counter(text(obj.get("Localisation")) or "Localisation Ã  prÃ©ciser" for obj in furniture)
+    categories = Counter(text(obj.get("CatÃ©gorie")) or "Non classÃ©" for obj in furniture)
     periods = Counter(date_bucket(text(obj.get("Datation"))) for obj in furniture)
 
     location_chart = bar_chart(locations)
@@ -156,53 +156,53 @@ def generate_statistics(furniture: list[dict]) -> None:
 
     page = f"""# Statistiques
 
-<p class="statistics-intro">Vue d’ensemble calculée automatiquement à partir des objets publiés dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
+<p class="statistics-intro">Vue dâ€™ensemble calculÃ©e automatiquement Ã  partir des objets publiÃ©s dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
 
 <div class="stat-cards">
   <article class="stat-card stat-card-primary">
     <span>Estimation globale</span>
-    <strong>{money(total_low)} – {money(total_high)}</strong>
-    <small>Fourchette indicative cumulée</small>
+    <strong>{money(total_low)} â€“ {money(total_high)}</strong>
+    <small>Fourchette indicative cumulÃ©e</small>
   </article>
   <article class="stat-card">
-    <span>Lots publiés</span>
+    <span>Lots publiÃ©s</span>
     <strong>{len(furniture)}</strong>
-    <small>{item_count} item(s) inventorié(s)</small>
+    <small>{item_count} item(s) inventoriÃ©(s)</small>
   </article>
   <article class="stat-card">
-    <span>Objets estimés</span>
+    <span>Objets estimÃ©s</span>
     <strong>{estimated_count}</strong>
     <small>{coverage:.0f} % du catalogue</small>
   </article>
   <article class="stat-card">
-    <span>Catégories</span>
+    <span>CatÃ©gories</span>
     <strong>{len(categories)}</strong>
-    <small>Types renseignés</small>
+    <small>Types renseignÃ©s</small>
   </article>
 </div>
 
 !!! note "Lecture des estimations"
     Les montants sont des estimations documentaires indicatives. Leur addition donne un ordre de grandeur patrimonial, non une valeur de vente garantie.
 
-## Répartition par localisation
+## RÃ©partition par localisation
 
-<div class="stat-chart" role="img" aria-label="Répartition des objets par localisation">
+<div class="stat-chart" role="img" aria-label="RÃ©partition des objets par localisation">
 {location_chart}
 </div>
 
-## Répartition par catégorie
+## RÃ©partition par catÃ©gorie
 
-<div class="stat-chart" role="img" aria-label="Répartition des objets par catégorie">
+<div class="stat-chart" role="img" aria-label="RÃ©partition des objets par catÃ©gorie">
 {category_chart}
 </div>
 
-## Répartition chronologique
+## RÃ©partition chronologique
 
-<div class="stat-chart" role="img" aria-label="Répartition des objets par période de datation">
+<div class="stat-chart" role="img" aria-label="RÃ©partition des objets par pÃ©riode de datation">
 {period_chart}
 </div>
 
-<p class="notice">Les périodes sont regroupées automatiquement à partir des formulations de la colonne « Datation ». Les datations chevauchant les XIXe et XXe siècles sont classées « Autour de 1900 ».</p>
+<p class="notice">Les pÃ©riodes sont regroupÃ©es automatiquement Ã  partir des formulations de la colonne Â« Datation Â». Les datations chevauchant les XIXe et XXe siÃ¨cles sont classÃ©es Â« Autour de 1900 Â».</p>
 """
     STATISTICS.write_text(page, encoding="utf-8")
 
@@ -229,16 +229,16 @@ def main() -> int:
     wb = load_workbook(WORKBOOK, data_only=True)
     require_columns(
         {text(c.value) for c in wb["Mobilier"][3]},
-        {"Identifiant", "Titre", "Catégorie", "Description", "Publié"},
+        {"Identifiant", "Titre", "CatÃ©gorie", "Description", "PubliÃ©"},
         "Mobilier",
     )
     require_columns(
         {text(c.value) for c in wb["Photos"][3]},
-        {"Identifiant objet", "Fichier", "Ordre", "Légende", "Image principale"},
+        {"Identifiant objet", "Fichier", "Ordre", "LÃ©gende", "Image principale"},
         "Photos",
     )
 
-    furniture = [r for r in rows_as_dicts(wb["Mobilier"]) if text(r["Publié"]).lower() in {"oui", "yes", "true", "1"}]
+    furniture = [r for r in rows_as_dicts(wb["Mobilier"]) if text(r["PubliÃ©"]).lower() in {"oui", "yes", "true", "1"}]
     photo_rows = list(rows_as_dicts(wb["Photos"]))
     photos_by_object = defaultdict(list)
     for photo in photo_rows:
@@ -248,59 +248,67 @@ def main() -> int:
 
     CATALOG.mkdir(parents=True, exist_ok=True)
     SITE_IMAGES.mkdir(parents=True, exist_ok=True)
-    # Migration ponctuelle depuis l'ancienne structure non localisée.
+    # Migration ponctuelle depuis l'ancienne structure non localisÃ©e.
     for legacy in [DOCS / "index.md", CATALOG / "index.md", DOCS / "statistiques.md"]:
         if legacy.exists():
             legacy.unlink()
     for legacy in CATALOG.glob("MOB-*.md"):
         if not any(legacy.name.endswith(f".{locale}.md") for locale in ("fr", "en", "it")):
             legacy.unlink()
-    # Ne régénérer que les fiches françaises : les futures traductions .en.md
+    # Ne rÃ©gÃ©nÃ©rer que les fiches franÃ§aises : les futures traductions .en.md
     # et .it.md doivent rester intactes.
     for old in CATALOG.glob("MOB-*.fr.md"):
         old.unlink()
 
     cards = []
-    categories = Counter()
-    locations = Counter()
+    categories = defaultdict(int)
     warnings = []
+    featured_image = ""
+
     for obj in furniture:
         object_id = text(obj["Identifiant"])
         title = text(obj["Titre"])
         if not object_id or not title:
-            warnings.append("Une ligne publiée sans identifiant ou sans titre a été ignorée.")
+            warnings.append("Une ligne publiÃ©e sans identifiant ou sans titre a Ã©tÃ© ignorÃ©e.")
             continue
 
         photos = photos_by_object.get(object_id, [])
         available = []
         for photo in photos:
-            filename = Path(text(photo["Fichier"])).name
+            raw_filename = text(photo["Fichier"]).strip()
+            if not raw_filename:
+                warnings.append(f"{object_id}: nom de photographie vide; ligne ignorÃ©e.")
+                continue
+
+            filename = Path(raw_filename).name
             source = SOURCE_PHOTOS / filename
-            if source.exists():
+            if source.is_file():
                 shutil.copy2(source, SITE_IMAGES / filename)
                 available.append(photo)
+            elif source.is_dir():
+                warnings.append(
+                    f"{object_id}: le chemin de photographie dÃ©signe un dossier: {raw_filename}"
+                )
             else:
                 warnings.append(f"{object_id}: photographie introuvable: {filename}")
 
         cover = next((p for p in available if text(p["Image principale"]).lower() in {"oui", "yes", "true", "1"}), available[0] if available else None)
-        category = text(obj["Catégorie"]) or "Non classé"
-        location = text(obj.get("Localisation")) or "Localisation à préciser"
+        category = text(obj["CatÃ©gorie"]) or "Non classÃ©"
         categories[category] += 1
-        locations[location] += 1
 
         item_quantity = quantity(obj)
-        quantity_label = f" · {item_quantity} items" if item_quantity > 1 else ""
+        quantity_label = f" Â· {item_quantity} items" if item_quantity > 1 else ""
         unit_estimate = estimate_range(unit_value(obj, "basse"), unit_value(obj, "haute"))
         lot_estimate = estimate_range(lot_value(obj, "basse"), lot_value(obj, "haute"))
         estimate = lot_estimate
 
         metadata = [
-            ("Catégorie", category),
+            ("CatÃ©gorie", category),
             ("Origine", text(obj.get("Origine"))),
-            ("Matériaux", text(obj.get("Matériaux"))),
+            ("MatÃ©riaux", text(obj.get("MatÃ©riaux"))),
             ("Dimensions", text(obj.get("Dimensions"))),
             ("Localisation", text(obj.get("Localisation"))),
-            ("Quantité", str(item_quantity)),
+            ("QuantitÃ©", str(item_quantity)),
             ("Statut", text(obj.get("Statut"))),
         ]
         meta_html = "\n".join(
@@ -311,7 +319,7 @@ def main() -> int:
         gallery = []
         for photo in available:
             filename = Path(text(photo["Fichier"])).name
-            caption = text(photo["Légende"]) or title
+            caption = text(photo["LÃ©gende"]) or title
             gallery.append(
                 f'<figure><a href="../../assets/images/{html.escape(filename)}" target="_blank">'
                 f'<img src="../../assets/images/{html.escape(filename)}" alt="{html.escape(caption)}" loading="lazy"></a>'
@@ -324,13 +332,13 @@ def main() -> int:
             url = text(obj.get(key))
             if url:
                 sources.append(f"- [{html.escape(url)}]({url})")
-        source_block = "\n".join(sources) if sources else "_Aucune source renseignée._"
+        source_block = "\n".join(sources) if sources else "_Aucune source renseignÃ©e._"
 
-        association_ids = re.findall(r"MOB-\d{3}", text(obj.get("Associé à")), flags=re.IGNORECASE)
-        association_block = " · ".join(
+        association_ids = re.findall(r"MOB-\d{3}", text(obj.get("AssociÃ© Ã ")), flags=re.IGNORECASE)
+        association_block = " Â· ".join(
             f'<a href="../{associated.upper()}/">{html.escape(associated.upper())}</a>'
             for associated in association_ids
-        ) or "_Aucun objet associé._"
+        ) or "_Aucun objet associÃ©._"
 
         hero_visual = (
             f'<a href="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" target="_blank">'
@@ -341,9 +349,9 @@ def main() -> int:
         page = f"""<div class="lot-hero">
 <div class="lot-visual">{hero_visual}</div>
 <div class="lot-summary">
-<p class="record-kicker">Lot {html.escape(object_id)} · {html.escape(category)}</p>
+<p class="record-kicker">Lot {html.escape(object_id)} Â· {html.escape(category)}</p>
 <h1>{html.escape(title)}</h1>
-<p class="lot-dating">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}</p>
+<p class="lot-dating">{html.escape(text(obj.get("Datation")) or "Datation Ã  prÃ©ciser")}</p>
 <div class="lot-estimate"><span>Estimation du lot</span><strong>{html.escape(lot_estimate)}</strong></div>
 <p class="lot-unit-estimate">Estimation unitaire : {html.escape(unit_estimate)}</p>
 
@@ -355,13 +363,13 @@ def main() -> int:
 
 ## Description
 
-{text(obj.get("Description")) or "_Description à compléter._"}
+{text(obj.get("Description")) or "_Description Ã  complÃ©ter._"}
 
-## État de conservation
+## Ã‰tat de conservation
 
-{text(obj.get("État")) or "_État à compléter._"}
+{text(obj.get("Ã‰tat")) or "_Ã‰tat Ã  complÃ©ter._"}
 
-## Objets associés
+## Objets associÃ©s
 
 {association_block}
 
@@ -375,7 +383,7 @@ def main() -> int:
 
 {source_block}
 
-<p class="notice">L’identification et l’estimation sont indicatives et peuvent évoluer avec de nouvelles mesures, photographies ou expertises.</p>
+<p class="notice">Lâ€™identification et lâ€™estimation sont indicatives et peuvent Ã©voluer avec de nouvelles mesures, photographies ou expertises.</p>
 """
         (CATALOG / f"{object_id}.fr.md").write_text(page, encoding="utf-8")
 
@@ -383,66 +391,62 @@ def main() -> int:
             f'<img src="assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}">'
             if cover else '<div class="card-placeholder">Sans photographie</div>'
         )
+        if cover and (object_id == "MOB-040" or not featured_image):
+            featured_image = Path(text(cover["Fichier"])).name
         cards.append(
-            f'<article class="catalog-card" data-location="{html.escape(location, quote=True)}" '
-            f'data-category="{html.escape(category, quote=True)}"><a href="{object_id}/">'
-            f'{cover_html.replace("assets/images/", "../assets/images/")}'
+            f'<article class="catalog-card"><a href="catalogue/{object_id}/">{cover_html}'
             f'<div class="catalog-card-body"><div class="card-lot"><span>Lot {html.escape(object_id)}</span>'
             f'<span>{html.escape(category)}</span></div><h2>{html.escape(title)}</h2>'
-            f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}'
+            f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation Ã  prÃ©ciser")}'
             f'{html.escape(quantity_label)}</p>'
             f'<p class="card-estimate"><span>Estimation</span><strong>{html.escape(estimate)}</strong></p></div></a></article>'
         )
 
-    location_options = "\n".join(
-        f'<option value="{html.escape(label, quote=True)}">{html.escape(label)} ({count})</option>'
-        for label, count in sorted(locations.items())
+    category_text = " Â· ".join(f"{html.escape(k)} ({v})" for k, v in sorted(categories.items()))
+    total_items = sum(quantity(obj) for obj in furniture)
+    total_low = sum(lot_value(obj, "basse") or 0 for obj in furniture)
+    total_high = sum(lot_value(obj, "haute") or 0 for obj in furniture)
+    hero_image = (
+        f'<div class="hero-image"><img src="assets/images/{html.escape(featured_image)}" alt="PiÃ¨ce choisie de la collection"></div>'
+        if featured_image else ""
     )
-    category_options = "\n".join(
-        f'<option value="{html.escape(label, quote=True)}">{html.escape(label)} ({count})</option>'
-        for label, count in sorted(categories.items())
-    )
-    catalogue = f"""<div class="catalogue-heading">
-  <p class="eyebrow">Collection complète</p>
-  <h1>Catalogue</h1>
+    index = f"""<div class="hero-panel">
+  <div class="hero-copy">
+    <p class="eyebrow">Collection particuliÃ¨re Â· Toscane</p>
+    <h1>Inventaire<br>du mobilier</h1>
+    <p class="hero-intro">Un catalogue Ã©volutif consacrÃ© au mobilier, aux objets dâ€™art et aux tÃ©moins matÃ©riels conservÃ©s dans la maison.</p>
+    <a class="hero-link" href="catalogue/">DÃ©couvrir le catalogue <span>â†’</span></a>
+  </div>
+  {hero_image}
 </div>
 
-<form class="catalog-filters" data-catalog-filters>
-  <div class="catalog-filter catalog-search">
-    <label for="catalog-query">Rechercher</label>
-    <input id="catalog-query" type="search" name="q" placeholder="Titre, lot, époque…" autocomplete="off">
-  </div>
-  <div class="catalog-filter">
-    <label for="catalog-location">Localisation</label>
-    <select id="catalog-location" name="location">
-      <option value="">Toutes les pièces</option>
-      {location_options}
-    </select>
-  </div>
-  <div class="catalog-filter">
-    <label for="catalog-category">Type d’objet</label>
-    <select id="catalog-category" name="category">
-      <option value="">Tous les types</option>
-      {category_options}
-    </select>
-  </div>
-  <button class="catalog-reset" type="reset">Réinitialiser</button>
-  <p class="catalog-result" aria-live="polite"><strong data-result-count>{len(cards)}</strong> lots affichés</p>
-</form>
-
-<div class="catalog-grid" data-catalog-grid>
-{''.join(cards) if cards else '<p class="empty-state">Aucun objet publié.</p>'}
+<div class="collection-summary">
+  <div><span>Lots documentÃ©s</span><strong>{len(cards)}</strong><small>{total_items} items</small></div>
+  <div><span>Estimation globale</span><strong>{money(total_low)} â€“ {money(total_high)}</strong></div>
+  <div><span>CatÃ©gories</span><strong>{len(categories)}</strong></div>
 </div>
-<p class="empty-state catalog-empty" data-catalog-empty hidden>Aucun lot ne correspond à ces critères.</p>
+
+<div class="section-heading"><p class="eyebrow">SÃ©lection complÃ¨te</p><h2>Les lots de la collection</h2></div>
+
+<p class="category-line">{category_text}</p>
+
+<div class="catalog-grid">
+{''.join(cards) if cards else '<p class="empty-state">Aucun objet publiÃ©.</p>'}
+</div>
 """
-    (CATALOG / "index.fr.md").write_text(catalogue, encoding="utf-8")
+    (DOCS / "index.fr.md").write_text(index, encoding="utf-8")
+    (CATALOG / "index.fr.md").write_text(
+        "# Catalogue\n\nToutes les fiches publiÃ©es apparaissent ci-dessous. Utilisez la recherche en haut de la page pour retrouver un objet, une matiÃ¨re, une Ã©poque ou une localisation.\n\n"
+        + "\n".join(f"- [{text(o['Titre'])}]({text(o['Identifiant'])}.md) â€” {text(o['Datation'])}" for o in furniture),
+        encoding="utf-8",
+    )
     generate_statistics(furniture)
 
     if warnings:
         print("Avertissements:")
         for warning in warnings:
             print(f"- {warning}")
-    print(f"Catalogue et statistiques générés: {len(cards)} objet(s), {sum(len(v) for v in photos_by_object.values())} photographie(s) référencée(s).")
+    print(f"Catalogue et statistiques gÃ©nÃ©rÃ©s: {len(cards)} objet(s), {sum(len(v) for v in photos_by_object.values())} photographie(s) rÃ©fÃ©rencÃ©e(s).")
     return 0
 
 
