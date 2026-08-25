@@ -261,10 +261,9 @@ def main() -> int:
         old.unlink()
 
     cards = []
-    categories = defaultdict(int)
+    categories = Counter()
+    locations = Counter()
     warnings = []
-    featured_image = ""
-
     for obj in furniture:
         object_id = text(obj["Identifiant"])
         title = text(obj["Titre"])
@@ -275,26 +274,19 @@ def main() -> int:
         photos = photos_by_object.get(object_id, [])
         available = []
         for photo in photos:
-            raw_filename = text(photo["Fichier"]).strip()
-            if not raw_filename:
-                warnings.append(f"{object_id}: nom de photographie vide; ligne ignorée.")
-                continue
-
-            filename = Path(raw_filename).name
+            filename = Path(text(photo["Fichier"])).name
             source = SOURCE_PHOTOS / filename
-            if source.is_file():
+            if source.exists():
                 shutil.copy2(source, SITE_IMAGES / filename)
                 available.append(photo)
-            elif source.is_dir():
-                warnings.append(
-                    f"{object_id}: le chemin de photographie désigne un dossier: {raw_filename}"
-                )
             else:
                 warnings.append(f"{object_id}: photographie introuvable: {filename}")
 
         cover = next((p for p in available if text(p["Image principale"]).lower() in {"oui", "yes", "true", "1"}), available[0] if available else None)
         category = text(obj["Catégorie"]) or "Non classé"
+        location = text(obj.get("Localisation")) or "Localisation à préciser"
         categories[category] += 1
+        locations[location] += 1
 
         item_quantity = quantity(obj)
         quantity_label = f" · {item_quantity} items" if item_quantity > 1 else ""
@@ -391,10 +383,10 @@ def main() -> int:
             f'<img src="assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}">'
             if cover else '<div class="card-placeholder">Sans photographie</div>'
         )
-        if cover and (object_id == "MOB-040" or not featured_image):
-            featured_image = Path(text(cover["Fichier"])).name
         cards.append(
-            f'<article class="catalog-card"><a href="catalogue/{object_id}/">{cover_html}'
+            f'<article class="catalog-card" data-location="{html.escape(location, quote=True)}" '
+            f'data-category="{html.escape(category, quote=True)}"><a href="{object_id}/">'
+            f'{cover_html.replace("assets/images/", "../assets/images/")}'
             f'<div class="catalog-card-body"><div class="card-lot"><span>Lot {html.escape(object_id)}</span>'
             f'<span>{html.escape(category)}</span></div><h2>{html.escape(title)}</h2>'
             f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}'
@@ -402,44 +394,48 @@ def main() -> int:
             f'<p class="card-estimate"><span>Estimation</span><strong>{html.escape(estimate)}</strong></p></div></a></article>'
         )
 
-    category_text = " · ".join(f"{html.escape(k)} ({v})" for k, v in sorted(categories.items()))
-    total_items = sum(quantity(obj) for obj in furniture)
-    total_low = sum(lot_value(obj, "basse") or 0 for obj in furniture)
-    total_high = sum(lot_value(obj, "haute") or 0 for obj in furniture)
-    hero_image = (
-        f'<div class="hero-image"><img src="assets/images/{html.escape(featured_image)}" alt="Pièce choisie de la collection"></div>'
-        if featured_image else ""
+    location_options = "\n".join(
+        f'<option value="{html.escape(label, quote=True)}">{html.escape(label)} ({count})</option>'
+        for label, count in sorted(locations.items())
     )
-    index = f"""<div class="hero-panel">
-  <div class="hero-copy">
-    <p class="eyebrow">Collection particulière · Toscane</p>
-    <h1>Inventaire<br>du mobilier</h1>
-    <p class="hero-intro">Un catalogue évolutif consacré au mobilier, aux objets d’art et aux témoins matériels conservés dans la maison.</p>
-    <a class="hero-link" href="catalogue/">Découvrir le catalogue <span>→</span></a>
+    category_options = "\n".join(
+        f'<option value="{html.escape(label, quote=True)}">{html.escape(label)} ({count})</option>'
+        for label, count in sorted(categories.items())
+    )
+    catalogue = f"""<div class="catalogue-heading">
+  <p class="eyebrow">Collection complète</p>
+  <h1>Catalogue</h1>
+</div>
+
+<form class="catalog-filters" data-catalog-filters>
+  <div class="catalog-filter catalog-search">
+    <label for="catalog-query">Rechercher</label>
+    <input id="catalog-query" type="search" name="q" placeholder="Titre, lot, époque…" autocomplete="off">
   </div>
-  {hero_image}
-</div>
+  <div class="catalog-filter">
+    <label for="catalog-location">Localisation</label>
+    <select id="catalog-location" name="location">
+      <option value="">Toutes les pièces</option>
+      {location_options}
+    </select>
+  </div>
+  <div class="catalog-filter">
+    <label for="catalog-category">Type d’objet</label>
+    <select id="catalog-category" name="category">
+      <option value="">Tous les types</option>
+      {category_options}
+    </select>
+  </div>
+  <button class="catalog-reset" type="reset">Réinitialiser</button>
+  <p class="catalog-result" aria-live="polite"><strong data-result-count>{len(cards)}</strong> lots affichés</p>
+</form>
 
-<div class="collection-summary">
-  <div><span>Lots documentés</span><strong>{len(cards)}</strong><small>{total_items} items</small></div>
-  <div><span>Estimation globale</span><strong>{money(total_low)} – {money(total_high)}</strong></div>
-  <div><span>Catégories</span><strong>{len(categories)}</strong></div>
-</div>
-
-<div class="section-heading"><p class="eyebrow">Sélection complète</p><h2>Les lots de la collection</h2></div>
-
-<p class="category-line">{category_text}</p>
-
-<div class="catalog-grid">
+<div class="catalog-grid" data-catalog-grid>
 {''.join(cards) if cards else '<p class="empty-state">Aucun objet publié.</p>'}
 </div>
+<p class="empty-state catalog-empty" data-catalog-empty hidden>Aucun lot ne correspond à ces critères.</p>
 """
-    (DOCS / "index.fr.md").write_text(index, encoding="utf-8")
-    (CATALOG / "index.fr.md").write_text(
-        "# Catalogue\n\nToutes les fiches publiées apparaissent ci-dessous. Utilisez la recherche en haut de la page pour retrouver un objet, une matière, une époque ou une localisation.\n\n"
-        + "\n".join(f"- [{text(o['Titre'])}]({text(o['Identifiant'])}.md) — {text(o['Datation'])}" for o in furniture),
-        encoding="utf-8",
-    )
+    (CATALOG / "index.fr.md").write_text(catalogue, encoding="utf-8")
     generate_statistics(furniture)
 
     if warnings:
