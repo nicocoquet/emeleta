@@ -71,7 +71,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
   position: relative;
   isolation: isolate;
   display: grid;
-  min-height: 15rem;
+  min-height: 28rem;
   max-width: 62rem;
   margin: 1.2rem auto 4rem;
   padding: 3.5rem 2rem;
@@ -81,9 +81,14 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 }
 .home-intro::before {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   inset: 0;
-  background: url("../assets/images/ecusson.png") center / min(31rem, 82vw) auto no-repeat;
+
+  background-image: url("../assets/images/ecusson.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+
   content: "";
   opacity: var(--home-crest-opacity);
   pointer-events: none;
