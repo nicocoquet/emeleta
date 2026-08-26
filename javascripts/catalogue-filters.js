@@ -35,7 +35,8 @@
       let visible = 0;
 
       cards.forEach((card) => {
-        const matchesQuery = !searchValue || normalize(card.textContent).includes(searchValue);
+        const searchableText = `${card.textContent || ""} ${card.dataset.search || ""}`;
+        const matchesQuery = !searchValue || normalize(searchableText).includes(searchValue);
         const matchesFacets = filters.every(({ field, name }) => {
           if (!field.value) return true;
           const attributeName = `data-${name.replaceAll("_", "-")}`;
