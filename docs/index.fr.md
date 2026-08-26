@@ -1,6 +1,6 @@
 <header class="home-intro">
   <h1>Trinketa</h1>
-  <p>Paris, FR</p>
+  <p>Italie</p>
 </header>
 
 <div class="collection-portals">
@@ -9,7 +9,7 @@
       <img src="assets/images/bibliotheque.webp" alt="Bibliothèque">
     </a>
     <div class="collection-portal-copy">
-      <p class="eyebrow">Livres anciens</p>
+      <p class="eyebrow">Livres</p>
       <h2>Bibliothèque</h2>
       <p>Un futur inventaire consacré aux ouvrages anciens, à leurs provenances et à leurs singularités.</p>
       <a class="collection-portal-link" href="bibliotheque/">Consulter la bibliothèque <span>→</span></a>
