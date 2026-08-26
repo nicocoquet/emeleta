@@ -16,7 +16,7 @@
         <link rel="prev" href="../catalogue/">
       
       
-        <link rel="next" href="../statistiques/">
+        <link rel="next" href="statistiques/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Biblioteca - Trinketa</title>
+        <title>Catalogo - Trinketa</title>
       
     
     
@@ -49,6 +49,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     
       <link rel="stylesheet" href="../../stylesheets/extra.css">
     
@@ -108,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Biblioteca
+              Catalogo
             
           </span>
         </div>
@@ -280,17 +282,18 @@
     
   
   
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
   
   Biblioteca
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -306,7 +309,7 @@
   
     
   
-  Statistiche
+  Statistiche degli arredi
 
       </a>
     </li>
@@ -416,6 +419,54 @@
   
   
   
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Biblioteca
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Biblioteca
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -427,12 +478,43 @@
   
   
   <span class="md-ellipsis">
-    Biblioteca
+    Catalogo
     
   </span>
   
 
       </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="statistiques/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Statistiche
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -450,7 +532,7 @@
   
   
   <span class="md-ellipsis">
-    Statistiche
+    Statistiche degli arredi
     
   </span>
   
@@ -600,7 +682,11 @@
     
       <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
       
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+      
         <script src="../../javascripts/catalogue-filters.js"></script>
+      
+        <script src="../../javascripts/bibliotheque-statistiques.js"></script>
       
         <script src="../../javascripts/contact-form.js"></script>
       
