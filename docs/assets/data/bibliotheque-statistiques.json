@@ -1,1 +1,68 @@
-
+{
+  "generatedFrom": "inventaire_bibliotheque.xlsx",
+  "records": [
+    {
+      "id": "BIB-001",
+      "title": "Le Pendule de Foucault",
+      "year": 1990,
+      "period": "1981–2000",
+      "languages": [
+        "Français"
+      ],
+      "subjects": [
+        "Littérature"
+      ],
+      "documentTypes": [
+        "Ouvrage"
+      ],
+      "heritage": "À préciser",
+      "completeness": "À préciser",
+      "illustrated": "À préciser",
+      "marks": [],
+      "volumes": 1.0,
+      "estimateLow": null,
+      "estimateHigh": null,
+      "cityHistorical": "Paris",
+      "city": "Paris",
+      "country": "France",
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "locationUncertain": false
+    },
+    {
+      "id": "BIB-002",
+      "title": "Le Mammouth bleu",
+      "year": 2005,
+      "period": "Après 2000",
+      "languages": [
+        "Français"
+      ],
+      "subjects": [
+        "Littérature"
+      ],
+      "documentTypes": [
+        "Ouvrage"
+      ],
+      "heritage": "À préciser",
+      "completeness": "À préciser",
+      "illustrated": "À préciser",
+      "marks": [],
+      "volumes": 1.0,
+      "estimateLow": null,
+      "estimateHigh": null,
+      "cityHistorical": "",
+      "city": "",
+      "country": "",
+      "latitude": null,
+      "longitude": null,
+      "locationUncertain": true
+    }
+  ],
+  "facets": [
+    "publication_date",
+    "language",
+    "subject",
+    "document_type",
+    "heritage"
+  ]
+}
