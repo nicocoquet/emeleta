@@ -193,8 +193,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .notice, .empty-state { padding: 1rem 1.2rem; color: var(--muted); border-left: 2px solid var(--wine); background: var(--surface); }
 
 /* Statistiques */
-.statistics-intro { max-width: 48rem; color: var(--muted); font-family: var(--serif); font-size: 1.35rem; }
-.stat-cards { display: grid; grid-template-columns: 1.35fr repeat(3, 1fr); margin: 2rem 0 4rem; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.stat-cards { display: grid; grid-template-columns: 1.35fr repeat(3, 1fr); margin: 1rem 0 4rem; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .stat-card { display: flex; min-height: 10rem; padding: 1.35rem 1.5rem; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); background: transparent; }
 .stat-card:last-child { border-right: 0; }
 .stat-card-primary { color: #fff; background: var(--wine); }
@@ -207,8 +206,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .stat-treemap { display: flex; min-height: 28rem; flex-wrap: wrap; gap: .25rem; }
 .stat-treemap-tile { display: flex; min-width: 8.5rem; min-height: 7rem; padding: 1rem; color: #fff; flex: var(--weight) 1 var(--share); flex-direction: column; justify-content: space-between; overflow: hidden; }
 .stat-treemap-tile span { max-width: 16rem; font-family: var(--serif); font-size: 1.15rem; line-height: 1.05; }
-.stat-treemap-tile strong { margin-top: auto; font-family: var(--serif); font-size: 2rem; font-weight: 500; line-height: 1; }
-.stat-treemap-tile small { color: rgba(255,255,255,.76); font-size: .55rem; letter-spacing: .08em; }
+.stat-treemap-tile small { margin-top: auto; color: rgba(255,255,255,.86); font-family: var(--serif); font-size: 1.6rem; font-weight: 500; line-height: 1; }
 .stat-stack-chart { display: grid; gap: .85rem; }
 .stat-stack-row { display: grid; grid-template-columns: minmax(8rem, 14rem) 1fr; gap: 1rem; align-items: center; }
 .stat-stack-label { display: flex; gap: .75rem; align-items: baseline; justify-content: space-between; }
