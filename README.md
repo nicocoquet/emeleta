@@ -1,4 +1,4 @@
-#Emeleta
+# Emeleta
 
 Site statique MkDocs d'inventaire de mobilier et livres anciens, alimenté par les classeurs `inventaire_mobilier.xlsx` et `inventaire_bibliotheque.xlsx`, et publié sur GitHub Pages : [Emeleta](https://nicocoquet.github.io/emeleta/)
 
