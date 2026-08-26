@@ -49,6 +49,14 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/"/>
     </url>
     <url>
+        <loc>Nonebibliotheque/statistiques/</loc>
+        <lastmod>2026-08-26</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/statistiques/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/statistiques/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/statistiques/"/>
+    </url>
+    <url>
         <loc>Nonecatalogue/MOB-001/</loc>
         <lastmod>2026-08-26</lastmod>
         <changefreq>daily</changefreq>
@@ -985,6 +993,14 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/"/>
     </url>
     <url>
+        <loc>Noneen/bibliotheque/statistiques/</loc>
+        <lastmod>2026-08-26</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/statistiques/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/statistiques/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/statistiques/"/>
+    </url>
+    <url>
         <loc>Noneen/catalogue/MOB-001/</loc>
         <lastmod>2026-08-26</lastmod>
         <changefreq>daily</changefreq>
@@ -1919,6 +1935,14 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/"/>
+    </url>
+    <url>
+        <loc>Noneit/bibliotheque/statistiques/</loc>
+        <lastmod>2026-08-26</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/bibliotheque/statistiques/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/bibliotheque/statistiques/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonebibliotheque/statistiques/"/>
     </url>
     <url>
         <loc>Noneit/catalogue/MOB-001/</loc>
