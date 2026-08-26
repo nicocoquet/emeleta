@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import html
+import json
 import re
 import shutil
 import sys
@@ -18,6 +19,7 @@ SOURCE_PHOTOS = ROOT / "photos" / "bibliotheque"
 DOCS = ROOT / "docs"
 LIBRARY = DOCS / "bibliotheque"
 SITE_IMAGES = DOCS / "assets" / "images" / "bibliotheque"
+SITE_DATA = DOCS / "assets" / "data"
 
 # Facettes retenues pour la bibliothèque Emeleta : pas de localisation,
 # car l'immense majorité des ouvrages est conservée au Bureau.
@@ -28,6 +30,46 @@ FACETS = [
     ("subject", "Thème"),
     ("language", "Langue"),
 ]
+
+STAT_FACETS = [
+    ("publication_date", "Période"),
+    ("language", "Langue"),
+    ("subject", "Thème"),
+    ("document_type", "Type de document"),
+    ("heritage", "Intérêt patrimonial"),
+]
+
+# Repli prudent pour les villes les plus courantes. Les coordonnées du tableur
+# restent prioritaires et permettent d'étendre la carte sans toucher au code.
+KNOWN_CITIES = {
+    "paris": (48.8566, 2.3522, "Paris", "France"),
+    "lyon": (45.7640, 4.8357, "Lyon", "France"),
+    "strasbourg": (48.5734, 7.7521, "Strasbourg", "France"),
+    "londres": (51.5074, -0.1278, "Londres", "Royaume-Uni"),
+    "london": (51.5074, -0.1278, "Londres", "Royaume-Uni"),
+    "rome": (41.9028, 12.4964, "Rome", "Italie"),
+    "roma": (41.9028, 12.4964, "Rome", "Italie"),
+    "milan": (45.4642, 9.1900, "Milan", "Italie"),
+    "milano": (45.4642, 9.1900, "Milan", "Italie"),
+    "florence": (43.7696, 11.2558, "Florence", "Italie"),
+    "firenze": (43.7696, 11.2558, "Florence", "Italie"),
+    "venise": (45.4408, 12.3155, "Venise", "Italie"),
+    "venezia": (45.4408, 12.3155, "Venise", "Italie"),
+    "turin": (45.0703, 7.6869, "Turin", "Italie"),
+    "torino": (45.0703, 7.6869, "Turin", "Italie"),
+    "zurich": (47.3769, 8.5417, "Zurich", "Suisse"),
+    "geneve": (46.2044, 6.1432, "Genève", "Suisse"),
+    "genève": (46.2044, 6.1432, "Genève", "Suisse"),
+    "bruxelles": (50.8503, 4.3517, "Bruxelles", "Belgique"),
+    "amsterdam": (52.3676, 4.9041, "Amsterdam", "Pays-Bas"),
+    "berlin": (52.5200, 13.4050, "Berlin", "Allemagne"),
+    "leipzig": (51.3397, 12.3731, "Leipzig", "Allemagne"),
+    "vienne": (48.2082, 16.3738, "Vienne", "Autriche"),
+    "wien": (48.2082, 16.3738, "Vienne", "Autriche"),
+    "madrid": (40.4168, -3.7038, "Madrid", "Espagne"),
+    "barcelone": (41.3874, 2.1686, "Barcelone", "Espagne"),
+    "barcelona": (41.3874, 2.1686, "Barcelone", "Espagne"),
+}
 
 # Colonnes nécessaires au fonctionnement du site. Les colonnes d'enrichissement
 # ISBN / notices sont optionnelles afin de ne pas bloquer la publication si elles
@@ -99,6 +141,43 @@ def publication_bucket(value) -> str:
     if year <= 2000:
         return "1981–2000"
     return "Après 2000"
+
+
+def publication_year(value):
+    match = re.search(r"\b(1[0-9]{3}|20[0-9]{2})\b", text(value))
+    return int(match.group(1)) if match else None
+
+
+def number(value):
+    if value in (None, ""):
+        return None
+    try:
+        return float(str(value).replace(" ", "").replace(",", "."))
+    except ValueError:
+        return None
+
+
+def normalized_key(value: str) -> str:
+    value = unicodedata.normalize("NFD", text(value).casefold())
+    return "".join(ch for ch in value if unicodedata.category(ch) != "Mn").strip()
+
+
+def location_data(book: dict):
+    city = first_value(book, "Ville_normalisee", "Lieu_publication")
+    country = text(book.get("Pays_normalise"))
+    latitude = number(book.get("Latitude"))
+    longitude = number(book.get("Longitude"))
+    fallback = KNOWN_CITIES.get(normalized_key(city))
+    if fallback:
+        latitude = latitude if latitude is not None else fallback[0]
+        longitude = longitude if longitude is not None else fallback[1]
+        city = first_value(book, "Ville_normalisee") or fallback[2]
+        country = country or fallback[3]
+    return city, country, latitude, longitude
+
+
+def truthy(value) -> bool:
+    return normalized_key(text(value)) in {"oui", "yes", "si", "true", "1"}
 
 
 def slug_sort(value: str) -> str:
@@ -218,6 +297,82 @@ def render_select(name: str, label: str, values: list[str]) -> str:
     )
 
 
+def statistics_page(language: str, count: int) -> str:
+    copies = {
+        "fr": {
+            "eyebrow": "Emeleta · Bibliothèque",
+            "title": "Statistiques de la bibliothèque",
+            "intro": "Vue d’ensemble interactive du fonds. Les indicateurs, graphiques, la carte et le classement des lieux d’édition réagissent ensemble aux filtres.",
+            "filters": "Explorer le fonds",
+            "reset": "Réinitialiser",
+            "map": "Géographie des éditions",
+            "map_intro": "La taille des cercles représente le nombre d’ouvrages ou leur valeur estimée. Les lieux sans coordonnées restent signalés dans le classement.",
+            "ranking": "Principaux lieux d’édition",
+            "charts": "Répartition du fonds",
+            "empty": "Le catalogue ne contient pas encore de notices publiées.",
+        },
+        "en": {
+            "eyebrow": "Emeleta · Library",
+            "title": "Library statistics",
+            "intro": "An interactive overview of the collection. Indicators, charts, map and publication-place ranking respond to the same filters.",
+            "filters": "Explore the collection",
+            "reset": "Reset",
+            "map": "Publication geography",
+            "map_intro": "Circle size represents the number of works or their estimated value. Places without coordinates remain visible in the ranking.",
+            "ranking": "Main publication places",
+            "charts": "Collection distribution",
+            "empty": "The catalogue does not yet contain published records.",
+        },
+        "it": {
+            "eyebrow": "Emeleta · Biblioteca",
+            "title": "Statistiche della biblioteca",
+            "intro": "Una panoramica interattiva del fondo. Indicatori, grafici, mappa e classifica dei luoghi di edizione rispondono agli stessi filtri.",
+            "filters": "Esplora il fondo",
+            "reset": "Reimposta",
+            "map": "Geografia delle edizioni",
+            "map_intro": "La dimensione dei cerchi rappresenta il numero di opere o il valore stimato. I luoghi senza coordinate restano visibili nella classifica.",
+            "ranking": "Principali luoghi di edizione",
+            "charts": "Distribuzione del fondo",
+            "empty": "Il catalogo non contiene ancora record pubblicati.",
+        },
+    }
+    c = copies[language]
+    return f'''<div class="statistics-page library-statistics" data-library-statistics data-data-url="../../assets/data/bibliotheque-statistiques.json">
+<header class="statistics-hero">
+<p class="eyebrow">{c["eyebrow"]}</p>
+<h1>{c["title"]}</h1>
+<p>{c["intro"]}</p>
+</header>
+
+<section class="statistics-filters" aria-labelledby="statistics-filters-title">
+<div><h2 id="statistics-filters-title">{c["filters"]}</h2><p class="statistics-match"><strong data-stat-result-count>{count}</strong> <span data-i18n="works">ouvrage(s)</span></p></div>
+<div class="statistics-filter-grid" data-stat-filters></div>
+<button class="catalog-reset" type="button" data-stat-reset>{c["reset"]}</button>
+</section>
+
+<section class="statistics-kpis" data-stat-kpis aria-live="polite"></section>
+
+<section class="statistics-section map-section">
+<div class="section-heading"><div><p class="eyebrow">Atlas</p><h2>{c["map"]}</h2><p>{c["map_intro"]}</p></div><div class="metric-toggle" data-map-metric></div></div>
+<div id="library-map" class="library-map" role="img" aria-label="{c["map"]}"></div>
+<div class="map-empty" data-map-empty hidden></div>
+</section>
+
+<section class="statistics-section">
+<div class="section-heading"><div><p class="eyebrow">Top</p><h2>{c["ranking"]}</h2></div></div>
+<div class="city-ranking" data-city-ranking></div>
+</section>
+
+<section class="statistics-section">
+<div class="section-heading"><div><p class="eyebrow">Data</p><h2>{c["charts"]}</h2></div></div>
+<div class="statistics-charts" data-stat-charts></div>
+</section>
+
+<p class="catalog-empty" data-stat-empty hidden>{c["empty"]}</p>
+</div>
+'''
+
+
 def main() -> int:
     if not WORKBOOK.exists():
         print(f"Classeur introuvable : {WORKBOOK}", file=sys.stderr)
@@ -236,6 +391,7 @@ def main() -> int:
         legacy.unlink()
     facet_values = {name: set() for name, _ in FACETS}
     cards = []
+    statistics = []
     warnings: list[str] = []
     for book in books:
         book_id = text(book["ID"]).upper()
@@ -252,6 +408,32 @@ def main() -> int:
             "subject": subjects,
             "language": languages,
         }
+        city, country, latitude, longitude = location_data(book)
+        low = number(book.get("Estimation_basse_EUR"))
+        high = number(book.get("Estimation_haute_EUR"))
+        volumes = number(book.get("Nombre_volumes")) or 1
+        statistics.append({
+            "id": book_id,
+            "title": title,
+            "year": publication_year(book.get("Date_publication")),
+            "period": publication_group,
+            "languages": languages,
+            "subjects": subjects,
+            "documentTypes": document_types,
+            "heritage": text(book.get("Interet_patrimonial")) or "À préciser",
+            "completeness": text(book.get("Completude")) or "À préciser",
+            "illustrated": text(book.get("Illustre")) or "À préciser",
+            "marks": split_values(book.get("Marques_exemplaire")),
+            "volumes": volumes,
+            "estimateLow": low,
+            "estimateHigh": high,
+            "cityHistorical": text(book.get("Lieu_publication")),
+            "city": city,
+            "country": country,
+            "latitude": latitude,
+            "longitude": longitude,
+            "locationUncertain": truthy(book.get("Lieu_incertitude")),
+        })
         for name, values in per_book_facets.items():
             facet_values[name].update(values)
         cover = copy_photo(text(book.get("Photo_couverture")), warnings)
@@ -318,6 +500,19 @@ def main() -> int:
     selects = "\n".join(render_select(name, label, list(facet_values[name])) for name, label in FACETS)
     index = f'''<div class="catalogue-heading">\n<p class="eyebrow">Emeleta · Bibliothèque</p>\n<h1>Bibliothèque</h1>\n<p>Catalogue des ouvrages conservés à Emeleta. Les filtres peuvent être combinés.</p>\n</div>\n\n<form class="catalog-filters library-filters" data-catalog-filters>\n<div class="catalog-filter catalog-filter-search"><label for="catalog-search">Recherche</label><input id="catalog-search" type="search" name="q" placeholder="Titre, auteur, ISBN, mot-clé…" autocomplete="off"></div>\n{selects}\n<button class="catalog-reset" type="reset">Réinitialiser</button>\n<p class="catalog-result"><strong data-result-count>{len(cards)}</strong> ouvrage(s)</p>\n</form>\n\n<div class="catalog-grid book-grid" data-catalog-grid>\n{chr(10).join(cards)}\n</div>\n\n<p class="catalog-empty" data-catalog-empty hidden>Aucun ouvrage ne correspond à ces critères.</p>\n'''
     (LIBRARY / "index.fr.md").write_text(index, encoding="utf-8")
+    SITE_DATA.mkdir(parents=True, exist_ok=True)
+    data = {
+        "generatedFrom": WORKBOOK.name,
+        "records": statistics,
+        "facets": [name for name, _ in STAT_FACETS],
+    }
+    (SITE_DATA / "bibliotheque-statistiques.json").write_text(
+        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    for language in ("fr", "en", "it"):
+        (LIBRARY / f"statistiques.{language}.md").write_text(
+            statistics_page(language, len(statistics)), encoding="utf-8"
+        )
     print(f"{len(cards)} ouvrage(s) généré(s).")
     if warnings:
         print("Avertissements :", file=sys.stderr)
