@@ -72,55 +72,21 @@ def estimate_range(low, high) -> str:
     return " – ".join(v for v in [money(low), money(high)] if v) or "Non renseignée"
 
 
-def date_bucket(value: str) -> str:
-    """Regroupe les datations libres du tableur en périodes lisibles."""
-    label = value.lower().replace("–", "-").replace("—", "-")
-    years = [int(year) for year in re.findall(r"\b(1[89]\d{2}|20\d{2})\b", label)]
-    if years:
-        midpoint = sum(years) / len(years)
-        if midpoint < 1900:
-            return "XIXe siècle"
-        if midpoint < 1925:
-            return "1900-1924"
-        if midpoint < 1945:
-            return "1925-1944"
-        if midpoint < 1970:
-            return "1945-1969"
-        if midpoint < 2000:
-            return "1970-1999"
-        return "Depuis 2000"
-    if "xixe" in label and "xxe" in label:
-        return "Autour de 1900"
-    if "xixe" in label:
-        return "XIXe siècle"
-    if "première moitié du xxe" in label or "début du xxe" in label:
-        return "1900-1944"
-    if "milieu du xxe" in label:
-        return "1945-1969"
-    if "seconde moitié du xxe" in label:
-        return "1945-1999"
-    if "xxe" in label:
-        return "XXe siècle (large)"
-    return "Datation à préciser"
-
-
-def bar_chart(data: Counter, empty_label: str = "Aucune donnée") -> str:
+def treemap(data: Counter, empty_label: str = "Aucune donnée") -> str:
     if not data:
         return f'<p class="empty-state">{html.escape(empty_label)}</p>'
-    maximum = max(data.values())
     total = sum(data.values())
-    rows = []
-    for label, count in sorted(data.items(), key=lambda item: (-item[1], item[0])):
-        width = 100 * count / maximum
+    tiles = []
+    for index, (label, count) in enumerate(sorted(data.items(), key=lambda item: (-item[1], item[0]))):
         share = 100 * count / total
-        rows.append(
-            '<div class="stat-bar-row">'
-            f'<div class="stat-bar-label"><span>{html.escape(label)}</span>'
-            f'<strong>{count} <small>({share:.0f} %)</small></strong></div>'
-            f'<div class="stat-bar-track"><span style="width:{width:.1f}%"></span></div>'
+        tiles.append(
+            f'<div class="stat-treemap-tile stat-color-{index % 10}" '
+            f'style="--weight:{count};--share:{share:.2f}%" '
+            f'title="{html.escape(label, quote=True)} : {count} lot(s), {share:.1f} %">'
+            f'<span>{html.escape(label)}</span><strong>{count}</strong><small>{share:.0f} %</small>'
             '</div>'
         )
-    return "\n".join(rows)
+    return '<div class="stat-treemap">' + "\n".join(tiles) + '</div>'
 
 
 def top_with_other(data: Counter, limit: int = 12) -> Counter:
@@ -130,6 +96,48 @@ def top_with_other(data: Counter, limit: int = 12) -> Counter:
     result = Counter(dict(ordered[:limit]))
     result["Autres catégories"] = sum(count for _, count in ordered[limit:])
     return result
+
+
+def location_category_histogram(furniture: list[dict], category_limit: int = 9) -> str:
+    """Histogramme horizontal empilé : une barre par pièce, segmentée par catégorie."""
+    category_totals = Counter(text(obj.get("Catégorie")) or "Non classé" for obj in furniture)
+    main_categories = [label for label, _ in category_totals.most_common(category_limit)]
+    legend_labels = main_categories + (["Autres catégories"] if len(category_totals) > category_limit else [])
+    color_by_label = {label: index % 10 for index, label in enumerate(legend_labels)}
+
+    matrix: dict[str, Counter] = defaultdict(Counter)
+    for obj in furniture:
+        location = text(obj.get("Localisation")) or "Localisation à préciser"
+        category = text(obj.get("Catégorie")) or "Non classé"
+        bucket = category if category in main_categories else "Autres catégories"
+        matrix[location][bucket] += 1
+
+    rows = []
+    for location, counts in sorted(matrix.items(), key=lambda item: (-sum(item[1].values()), item[0])):
+        total = sum(counts.values())
+        segments = []
+        for label in legend_labels:
+            count = counts.get(label, 0)
+            if not count:
+                continue
+            share = 100 * count / total
+            visible_label = html.escape(str(count)) if share >= 7 else ""
+            segments.append(
+                f'<span class="stat-stack-segment stat-color-{color_by_label[label]}" '
+                f'style="width:{share:.3f}%" title="{html.escape(label, quote=True)} : {count}" '
+                f'aria-label="{html.escape(label, quote=True)} : {count}">{visible_label}</span>'
+            )
+        rows.append(
+            '<div class="stat-stack-row">'
+            f'<div class="stat-stack-label"><span>{html.escape(location)}</span><strong>{total}</strong></div>'
+            f'<div class="stat-stack">{"".join(segments)}</div></div>'
+        )
+
+    legend = "".join(
+        f'<span><i class="stat-color-{color_by_label[label]}"></i>{html.escape(label)}</span>'
+        for label in legend_labels
+    )
+    return f'<div class="stat-stack-chart">{"".join(rows)}</div><div class="stat-legend">{legend}</div>'
 
 
 def generate_statistics(furniture: list[dict]) -> None:
@@ -146,11 +154,9 @@ def generate_statistics(furniture: list[dict]) -> None:
 
     locations = Counter(text(obj.get("Localisation")) or "Localisation à préciser" for obj in furniture)
     categories = Counter(text(obj.get("Catégorie")) or "Non classé" for obj in furniture)
-    periods = Counter(date_bucket(text(obj.get("Datation"))) for obj in furniture)
-
-    location_chart = bar_chart(locations)
-    category_chart = bar_chart(top_with_other(categories))
-    period_chart = bar_chart(periods)
+    location_chart = treemap(locations)
+    category_chart = treemap(top_with_other(categories, limit=14))
+    mixed_chart = location_category_histogram(furniture)
     coverage = (estimated_count / len(furniture) * 100) if furniture else 0
     item_count = sum(quantity(obj) for obj in furniture)
 
@@ -167,7 +173,7 @@ def generate_statistics(furniture: list[dict]) -> None:
   <article class="stat-card">
     <span>Lots publiés</span>
     <strong>{len(furniture)}</strong>
-    <small>{item_count} item(s) inventorié(s)</small>
+    <small>{item_count} objet(s) inventorié(s)</small>
   </article>
   <article class="stat-card">
     <span>Objets estimés</span>
@@ -186,23 +192,25 @@ def generate_statistics(furniture: list[dict]) -> None:
 
 ## Répartition par localisation
 
-<div class="stat-chart" role="img" aria-label="Répartition des objets par localisation">
+<div class="stat-chart" role="img" aria-label="Treemap des lots par localisation">
 {location_chart}
 </div>
 
 ## Répartition par catégorie
 
-<div class="stat-chart" role="img" aria-label="Répartition des objets par catégorie">
+<div class="stat-chart" role="img" aria-label="Treemap des lots par catégorie">
 {category_chart}
 </div>
 
-## Répartition chronologique
+<p class="notice">Pour préserver la lisibilité, les catégories les moins représentées sont regroupées sous « Autres catégories ».</p>
 
-<div class="stat-chart" role="img" aria-label="Répartition des objets par période de datation">
-{period_chart}
+## Catégories par localisation
+
+<div class="stat-chart" role="img" aria-label="Histogramme des catégories pour chaque localisation">
+{mixed_chart}
 </div>
 
-<p class="notice">Les périodes sont regroupées automatiquement à partir des formulations de la colonne « Datation ». Les datations chevauchant les XIXe et XXe siècles sont classées « Autour de 1900 ».</p>
+<p class="notice">Chaque barre correspond à une pièce. Sa longueur représente le nombre de lots et ses segments indiquent leur catégorie. Les catégories minoritaires sont regroupées pour conserver un graphique lisible.</p>
 """
     STATISTICS.write_text(page, encoding="utf-8")
 
