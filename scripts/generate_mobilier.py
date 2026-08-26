@@ -19,7 +19,7 @@ SOURCE_PHOTOS = ROOT / "photos"
 DOCS = ROOT / "docs"
 CATALOG = DOCS / "catalogue"
 SITE_IMAGES = DOCS / "assets" / "images"
-STATISTICS = DOCS / "statistiques.fr.md"
+STATISTICS = {locale: DOCS / f"statistiques.{locale}.md" for locale in ("fr", "en", "it")}
 
 
 def text(value) -> str:
@@ -140,6 +140,113 @@ def location_category_histogram(furniture: list[dict], category_limit: int = 9) 
     return f'<div class="stat-stack-chart">{"".join(rows)}</div><div class="stat-legend">{legend}</div>'
 
 
+def library_statistics_section(language: str) -> str:
+    labels = {
+        "fr": {
+            "eyebrow": "Emeleta · Bibliothèque",
+            "title": "Statistiques de la bibliothèque",
+            "intro": "Vue d’ensemble interactive du fonds. Les indicateurs, graphiques, la carte et le classement des lieux d’édition réagissent ensemble aux filtres.",
+            "filters": "Explorer le fonds",
+            "search": "Recherche",
+            "search_hint": "Titre, auteur, éditeur, lieu…",
+            "period": "Période",
+            "language": "Langue",
+            "category": "Catégorie",
+            "reset": "Réinitialiser",
+            "map": "Carte des lieux d’édition",
+            "cities": "Principaux lieux d’édition",
+            "periods": "Répartition par période",
+            "languages": "Répartition par langue",
+            "categories": "Répartition par catégorie",
+            "publishers": "Principaux éditeurs",
+        },
+        "en": {
+            "eyebrow": "Emeleta · Library",
+            "title": "Library statistics",
+            "intro": "Interactive overview of the collection. Indicators, charts, map and publishing-place ranking respond together to the filters.",
+            "filters": "Explore the collection",
+            "search": "Search",
+            "search_hint": "Title, author, publisher, place…",
+            "period": "Period",
+            "language": "Language",
+            "category": "Category",
+            "reset": "Reset",
+            "map": "Map of publishing places",
+            "cities": "Main publishing places",
+            "periods": "Distribution by period",
+            "languages": "Distribution by language",
+            "categories": "Distribution by category",
+            "publishers": "Main publishers",
+        },
+        "it": {
+            "eyebrow": "Emeleta · Biblioteca",
+            "title": "Statistiche della biblioteca",
+            "intro": "Panoramica interattiva del fondo. Indicatori, grafici, mappa e classifica dei luoghi di edizione reagiscono insieme ai filtri.",
+            "filters": "Esplora il fondo",
+            "search": "Ricerca",
+            "search_hint": "Titolo, autore, editore, luogo…",
+            "period": "Periodo",
+            "language": "Lingua",
+            "category": "Categoria",
+            "reset": "Reimposta",
+            "map": "Mappa dei luoghi di edizione",
+            "cities": "Principali luoghi di edizione",
+            "periods": "Distribuzione per periodo",
+            "languages": "Distribuzione per lingua",
+            "categories": "Distribuzione per categoria",
+            "publishers": "Principali editori",
+        },
+    }[language]
+    return f"""
+<hr class="statistics-divider">
+
+<div class="statistics-page library-statistics" data-library-statistics data-data-url="assets/data/bibliotheque-statistiques.json">
+<header class="statistics-hero">
+<p class="eyebrow">{labels["eyebrow"]}</p>
+<h2>{labels["title"]}</h2>
+<p>{labels["intro"]}</p>
+</header>
+
+<section class="library-filters" aria-label="{labels["filters"]}">
+<label>{labels["search"]}<input type="search" data-filter="search" placeholder="{labels["search_hint"]}"></label>
+<label>{labels["period"]}<select data-filter="period"></select></label>
+<label>{labels["language"]}<select data-filter="language"></select></label>
+<label>{labels["category"]}<select data-filter="category"></select></label>
+<button type="button" data-reset-filters>{labels["reset"]}</button>
+</section>
+
+<section class="library-kpis" data-kpis></section>
+
+<div class="library-statistics-grid">
+<section class="library-panel library-map-panel">
+<h3>{labels["map"]}</h3>
+<div class="library-map" data-library-map></div>
+</section>
+<section class="library-panel">
+<h3>{labels["cities"]}</h3>
+<div class="library-ranking" data-ranking="cities"></div>
+</section>
+<section class="library-panel">
+<h3>{labels["periods"]}</h3>
+<div class="library-chart" data-chart="periods"></div>
+</section>
+<section class="library-panel">
+<h3>{labels["languages"]}</h3>
+<div class="library-chart" data-chart="languages"></div>
+</section>
+<section class="library-panel">
+<h3>{labels["categories"]}</h3>
+<div class="library-chart" data-chart="categories"></div>
+</section>
+<section class="library-panel">
+<h3>{labels["publishers"]}</h3>
+<div class="library-ranking" data-ranking="publishers"></div>
+</section>
+</div>
+</div>
+"""
+
+
 def generate_statistics(furniture: list[dict]) -> None:
     lows = [value for obj in furniture if (value := lot_value(obj, "basse")) is not None]
     highs = [value for obj in furniture if (value := lot_value(obj, "haute")) is not None]
@@ -160,58 +267,96 @@ def generate_statistics(furniture: list[dict]) -> None:
     coverage = (estimated_count / len(furniture) * 100) if furniture else 0
     item_count = sum(quantity(obj) for obj in furniture)
 
-    page = f"""# Statistiques
+    translations = {
+        "fr": {
+            "title": "Statistiques", "subtitle": "Mobilier & objets d’art",
+            "overview": "Vue d’ensemble", "estimate": "Estimation globale",
+            "estimate_note": "Fourchette indicative cumulée", "lots": "Lots publiés",
+            "items": "objet(s) inventorié(s)", "estimated": "Objets estimés",
+            "catalogue": "du catalogue", "categories": "Catégories",
+            "types": "Types renseignés", "reading": "Lecture des estimations",
+            "notice": "Les montants sont des estimations documentaires indicatives. Leur addition donne un ordre de grandeur patrimonial, non une valeur de vente garantie.",
+            "location": "Répartition par localisation", "category": "Répartition par catégorie",
+            "mixed": "Catégories par localisation",
+        },
+        "en": {
+            "title": "Statistics", "subtitle": "Furniture & works of art",
+            "overview": "Overview", "estimate": "Total estimate",
+            "estimate_note": "Cumulative indicative range", "lots": "Published lots",
+            "items": "inventoried item(s)", "estimated": "Estimated objects",
+            "catalogue": "of the catalogue", "categories": "Categories",
+            "types": "Recorded types", "reading": "Reading the estimates",
+            "notice": "Amounts are indicative documentary estimates. Their sum provides a broad heritage value, not a guaranteed sale price.",
+            "location": "Distribution by location", "category": "Distribution by category",
+            "mixed": "Categories by location",
+        },
+        "it": {
+            "title": "Statistiche", "subtitle": "Arredi e oggetti d’arte",
+            "overview": "Panoramica", "estimate": "Stima complessiva",
+            "estimate_note": "Intervallo indicativo cumulativo", "lots": "Lotti pubblicati",
+            "items": "oggetto/i inventariato/i", "estimated": "Oggetti stimati",
+            "catalogue": "del catalogo", "categories": "Categorie",
+            "types": "Tipi registrati", "reading": "Lettura delle stime",
+            "notice": "Gli importi sono stime documentarie indicative. La loro somma fornisce un ordine di grandezza patrimoniale, non un prezzo di vendita garantito.",
+            "location": "Distribuzione per ubicazione", "category": "Distribuzione per categoria",
+            "mixed": "Categorie per ubicazione",
+        },
+    }
 
-## Mobilier & objets d’art
+    for language, labels in translations.items():
+        page = f"""# {labels["title"]}
 
-### Vue d’ensemble
+## {labels["subtitle"]}
+
+### {labels["overview"]}
 
 <div class="stat-cards">
   <article class="stat-card stat-card-primary">
-    <span>Estimation globale</span>
+    <span>{labels["estimate"]}</span>
     <strong>{money(total_low)} – {money(total_high)}</strong>
-    <small>Fourchette indicative cumulée</small>
+    <small>{labels["estimate_note"]}</small>
   </article>
   <article class="stat-card">
-    <span>Lots publiés</span>
+    <span>{labels["lots"]}</span>
     <strong>{len(furniture)}</strong>
-    <small>{item_count} objet(s) inventorié(s)</small>
+    <small>{item_count} {labels["items"]}</small>
   </article>
   <article class="stat-card">
-    <span>Objets estimés</span>
+    <span>{labels["estimated"]}</span>
     <strong>{estimated_count}</strong>
-    <small>{coverage:.0f} % du catalogue</small>
+    <small>{coverage:.0f} % {labels["catalogue"]}</small>
   </article>
   <article class="stat-card">
-    <span>Catégories</span>
+    <span>{labels["categories"]}</span>
     <strong>{len(categories)}</strong>
-    <small>Types renseignés</small>
+    <small>{labels["types"]}</small>
   </article>
 </div>
 
-!!! note "Lecture des estimations"
-    Les montants sont des estimations documentaires indicatives. Leur addition donne un ordre de grandeur patrimonial, non une valeur de vente garantie.
+!!! note "{labels["reading"]}"
+    {labels["notice"]}
 
-### Répartition par localisation
+### {labels["location"]}
 
-<div class="stat-chart" role="img" aria-label="Treemap des lots par localisation">
+<div class="stat-chart" role="img">
 {location_chart}
 </div>
 
-### Répartition par catégorie
+### {labels["category"]}
 
-<div class="stat-chart" role="img" aria-label="Treemap des lots par catégorie">
+<div class="stat-chart" role="img">
 {category_chart}
 </div>
 
-### Catégories par localisation
+### {labels["mixed"]}
 
-<div class="stat-chart" role="img" aria-label="Histogramme des catégories pour chaque localisation">
+<div class="stat-chart" role="img">
 {mixed_chart}
 </div>
 
+{library_statistics_section(language)}
 """
-    STATISTICS.write_text(page.rstrip() + "\n", encoding="utf-8")
+        STATISTICS[language].write_text(page.rstrip() + "\n", encoding="utf-8")
 
 
 def rows_as_dicts(sheet, header_row: int = 3):

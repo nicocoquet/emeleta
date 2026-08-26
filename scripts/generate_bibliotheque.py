@@ -509,10 +509,13 @@ def main() -> int:
     (SITE_DATA / "bibliotheque-statistiques.json").write_text(
         json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    # La page Statistiques est désormais unifiée à la racine du site et
+    # générée par generate_mobilier.py. Supprimer les anciennes pages séparées
+    # évite qu'elles restent accessibles par la recherche ou des liens directs.
     for language in ("fr", "en", "it"):
-        (LIBRARY / f"statistiques.{language}.md").write_text(
-            statistics_page(language, len(statistics)), encoding="utf-8"
-        )
+        legacy_statistics = LIBRARY / f"statistiques.{language}.md"
+        if legacy_statistics.exists():
+            legacy_statistics.unlink()
     print(f"{len(cards)} ouvrage(s) généré(s).")
     if warnings:
         print("Avertissements :", file=sys.stderr)

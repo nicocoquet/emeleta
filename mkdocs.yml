@@ -48,7 +48,6 @@ plugins:
             Catalogue: Catalogue
             Bibliothèque: Library
             Statistiques: Statistics
-            Statistiques du mobilier: Furniture statistics
             Contacts: Contact
           theme:
             language: en
@@ -60,7 +59,6 @@ plugins:
             Catalogue: Catalogo
             Bibliothèque: Biblioteca
             Statistiques: Statistiche
-            Statistiques du mobilier: Statistiche degli arredi
             Contacts: Contatti
           theme:
             language: it
@@ -92,10 +90,8 @@ extra_javascript:
 nav:
   - Accueil: index.md
   - Catalogue: catalogue/index.md
-  - Bibliothèque:
-      - Catalogue: bibliotheque/index.md
-      - Statistiques: bibliotheque/statistiques.md
-  - Statistiques du mobilier: statistiques.md
+  - Bibliothèque: bibliotheque/index.md
+  - Statistiques: statistiques.md
   - Contacts: contacts.md
 
 copyright: © Baboulinet · 2026 — Tous droits réservés
