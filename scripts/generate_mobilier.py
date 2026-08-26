@@ -83,7 +83,7 @@ def treemap(data: Counter, empty_label: str = "Aucune donnée") -> str:
             f'<div class="stat-treemap-tile stat-color-{index % 10}" '
             f'style="--weight:{count};--share:{share:.2f}%" '
             f'title="{html.escape(label, quote=True)} : {count} lot(s), {share:.1f} %">'
-            f'<span>{html.escape(label)}</span><strong>{count}</strong><small>{share:.0f} %</small>'
+            f'<span>{html.escape(label)}</span><small>{share:.0f} %</small>'
             '</div>'
         )
     return '<div class="stat-treemap">' + "\n".join(tiles) + '</div>'
@@ -162,7 +162,9 @@ def generate_statistics(furniture: list[dict]) -> None:
 
     page = f"""# Statistiques
 
-<p class="statistics-intro">Vue d’ensemble calculée automatiquement à partir des objets publiés dans le classeur <code>inventaire_mobilier.xlsx</code>.</p>
+## Mobilier & objets d’art
+
+### Vue d’ensemble
 
 <div class="stat-cards">
   <article class="stat-card stat-card-primary">
@@ -190,29 +192,26 @@ def generate_statistics(furniture: list[dict]) -> None:
 !!! note "Lecture des estimations"
     Les montants sont des estimations documentaires indicatives. Leur addition donne un ordre de grandeur patrimonial, non une valeur de vente garantie.
 
-## Répartition par localisation
+### Répartition par localisation
 
 <div class="stat-chart" role="img" aria-label="Treemap des lots par localisation">
 {location_chart}
 </div>
 
-## Répartition par catégorie
+### Répartition par catégorie
 
 <div class="stat-chart" role="img" aria-label="Treemap des lots par catégorie">
 {category_chart}
 </div>
 
-<p class="notice">Pour préserver la lisibilité, les catégories les moins représentées sont regroupées sous « Autres catégories ».</p>
-
-## Catégories par localisation
+### Catégories par localisation
 
 <div class="stat-chart" role="img" aria-label="Histogramme des catégories pour chaque localisation">
 {mixed_chart}
 </div>
 
-<p class="notice">Chaque barre correspond à une pièce. Sa longueur représente le nombre de lots et ses segments indiquent leur catégorie. Les catégories minoritaires sont regroupées pour conserver un graphique lisible.</p>
 """
-    STATISTICS.write_text(page, encoding="utf-8")
+    STATISTICS.write_text(page.rstrip() + "\n", encoding="utf-8")
 
 
 def rows_as_dicts(sheet, header_row: int = 3):
