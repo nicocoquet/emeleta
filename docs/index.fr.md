@@ -1,6 +1,6 @@
 <header class="home-intro">
-  <h1>Emeleta</h1>
-  <p>Trequanda, SI</p>
+  <h1>Trinkata</h1>
+  <p>Paris, FR</p>
 </header>
 
 <div class="collection-portals">
