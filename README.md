@@ -1,8 +1,6 @@
 # Trinketa
 
-Site statique MkDocs d'inventaire du mobilier et des livres anciens, alimenté par les classeurs `inventaire_mobilier.xlsx` et `inventaire_bibliotheque.xlsx`, publié sur GitHub Pages :
-[![Emeleta](docs/assets/images/preview.jpg)](https://nicocoquet.github.io/emeleta/)
-
+Site statique MkDocs d'inventaire du mobilier et des livres anciens, alimenté par les classeurs `inventaire_mobilier.xlsx` et `inventaire_bibliotheque.xlsx`, publié sur GitHub Pages : https://nicocoquet.github.io/trinketa/
 
 ## Inventaire du mobilier
 
