@@ -32,7 +32,7 @@ jobs:
         run: python -m pip install -r requirements.txt
 
       - name: Générer le catalogue mobilier
-        run: python scripts/generate_catalog.py
+        run: python scripts/generate_mobilier.py
 
       - name: Générer la bibliothèque
         run: python scripts/generate_bibliotheque.py
