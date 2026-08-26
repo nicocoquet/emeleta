@@ -48,6 +48,7 @@ plugins:
             Catalogue: Catalogue
             Bibliothèque: Library
             Statistiques: Statistics
+            Statistiques du mobilier: Furniture statistics
             Contacts: Contact
           theme:
             language: en
@@ -59,6 +60,7 @@ plugins:
             Catalogue: Catalogo
             Bibliothèque: Biblioteca
             Statistiques: Statistiche
+            Statistiques du mobilier: Statistiche degli arredi
             Contacts: Contatti
           theme:
             language: it
@@ -77,18 +79,23 @@ markdown_extensions:
       permalink: true
 
 extra_css:
+  - https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
   - stylesheets/extra.css
   - stylesheets/bibliotheque.css
 
 extra_javascript:
+  - https://unpkg.com/leaflet@1.9.4/dist/leaflet.js
   - javascripts/catalogue-filters.js
+  - javascripts/bibliotheque-statistiques.js
   - javascripts/contact-form.js
 
 nav:
   - Accueil: index.md
   - Catalogue: catalogue/index.md
-  - Bibliothèque: bibliotheque/index.md
-  - Statistiques: statistiques.md
+  - Bibliothèque:
+      - Catalogue: bibliotheque/index.md
+      - Statistiques: bibliotheque/statistiques.md
+  - Statistiques du mobilier: statistiques.md
   - Contacts: contacts.md
 
 copyright: © Baboulinet · 2026 — Tous droits réservés
