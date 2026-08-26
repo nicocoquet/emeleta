@@ -1,5 +1,5 @@
 <header class="home-intro">
-  <h1>Trinkata</h1>
+  <h1>Trinketa</h1>
   <p>Paris, FR</p>
 </header>
 
