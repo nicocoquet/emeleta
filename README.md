@@ -25,7 +25,7 @@ Les champs inconnus peuvent rester vides.
 2. Les placer dans le dossier `photos/` ;
 3. Ajouter une ligne par fichier dans la feuille **Photos** ;
 4. Répéter le même identifiant pour toutes les vues du même objet ;
-5. Attribuer un ordre et choisissez une seule image principale.
+5. Attribuer un ordre et choisir une seule image principale.
 
 Pour masquer temporairement une fiche sans la supprimer du classeur, passez sa valeur **Publié** de **Oui** à **Non**.
 
@@ -47,3 +47,12 @@ Les champs inconnus peuvent rester vides.
 ### Ajouter des photographies
 
 Pour masquer temporairement une fiche sans la supprimer du classeur, passez sa valeur **Publié** de **Oui** à **Non**.
+
+## Statistiques
+
+La page **Statistiques** réunit dans une même vue :
+
+- les estimations et répartitions du mobilier ;
+- les indicateurs, graphiques et la carte des lieux d’édition de la bibliothèque.
+
+Elle est régénérée automatiquement à partir des deux classeurs lors de chaque déploiement. Le script du mobilier construit la page unifiée, puis le script de la bibliothèque produit le jeu de données interactif consommé par cette page.
