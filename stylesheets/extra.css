@@ -80,7 +80,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
   z-index: 0;
   inset: 0;
   background-image: url("../assets/images/ecusson.png");
-  background-position: calc(100% + 16rem) 58%;
+  background-position: calc(100% + 16rem) -12rem;
   background-repeat: no-repeat;
   background-size: min(86vw, 82rem) auto;
   content: "";
@@ -308,7 +308,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 @media (max-width: 600px) {
   .md-content__inner { padding: 1.4rem 1rem 3.5rem; }
   .md-main:is(:has(.catalogue-heading), :has(.stat-cards), :has(.contact-heading))::before {
-    background-position: calc(100% + 15rem) 52%;
+    background-position: calc(100% + 15rem) -8rem;
     background-size: 52rem auto;
   }
   .md-main:has(.home-intro) .md-content__inner { padding-top: .25rem; }

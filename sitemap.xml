@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>Nonecontacts/</loc>
+        <loc>Nonecontact/</loc>
         <lastmod>2026-08-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="fr" href="Nonecontacts/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="Noneen/contacts/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="Noneit/contacts/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonecontact/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/contact/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/contact/"/>
     </url>
     <url>
         <loc>None./</loc>
@@ -937,12 +937,12 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/catalogue/"/>
     </url>
     <url>
-        <loc>Noneen/contacts/</loc>
+        <loc>Noneen/contact/</loc>
         <lastmod>2026-08-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="Noneen/contacts/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="Nonecontacts/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="Noneit/contacts/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/contact/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonecontact/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/contact/"/>
     </url>
     <url>
         <loc>Noneen/</loc>
@@ -1873,12 +1873,12 @@
         <xhtml:link rel="alternate" hreflang="it" href="Noneit/catalogue/"/>
     </url>
     <url>
-        <loc>Noneit/contacts/</loc>
+        <loc>Noneit/contact/</loc>
         <lastmod>2026-08-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="it" href="Noneit/contacts/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="Noneen/contacts/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="Nonecontacts/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="Noneit/contact/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/contact/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="Nonecontact/"/>
     </url>
     <url>
         <loc>Noneit/</loc>
