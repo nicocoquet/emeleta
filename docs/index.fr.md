@@ -12,7 +12,7 @@
       <p class="eyebrow">Livres</p>
       <h2>Bibliothèque</h2>
       <p>Un futur inventaire consacré aux ouvrages anciens, à leurs provenances et à leurs singularités.</p>
-      <a class="collection-portal-link" href="bibliotheque/">Consulter la bibliothèque <span>→</span></a>
+      <a class="collection-portal-link" href="bibliotheque/">Consulter <span>→</span></a>
     </div>
   </article>
 
@@ -24,7 +24,7 @@
       <p class="eyebrow">Mobilier & objets d’art</p>
       <h2>Inventaire</h2>
       <p>Un catalogue évolutif consacré au mobilier et aux témoins matériels conservés dans la maison.</p>
-      <a class="collection-portal-link" href="catalogue/">Consulter le catalogue <span>→</span></a>
+      <a class="collection-portal-link" href="catalogue/">Consulter<span>→</span></a>
     </div>
   </article>
 </div>
