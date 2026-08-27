@@ -80,7 +80,7 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
   z-index: 0;
   inset: 0;
   background-image: url("../assets/images/ecusson.png");
-  background-position: calc(100% + 16rem) -8rem;
+  background-position: calc(100% + 16rem) -4rem;
   background-repeat: no-repeat;
   background-size: min(86vw, 82rem) auto;
   content: "";
