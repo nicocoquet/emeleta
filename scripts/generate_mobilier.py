@@ -168,12 +168,8 @@ def library_statistics_section(language: str) -> str:
     """
     labels = {
         "fr": {
-            "eyebrow": "Emeleta · Bibliothèque",
-            "title": "Statistiques de la bibliothèque",
-            "intro": "Vue d’ensemble interactive du fonds. Les indicateurs, graphiques, la carte et le classement des lieux d’édition réagissent ensemble aux filtres.",
+            "title": "Bibliothèque",
             "filters": "Explorer le fonds",
-            "search": "Recherche",
-            "search_hint": "Titre, auteur, éditeur, lieu…",
             "period": "Période",
             "language": "Langue",
             "category": "Catégorie",
@@ -186,12 +182,8 @@ def library_statistics_section(language: str) -> str:
             "publishers": "Principaux éditeurs",
         },
         "en": {
-            "eyebrow": "Emeleta · Library",
-            "title": "Library statistics",
-            "intro": "Interactive overview of the collection. Indicators, charts, map and publishing-place ranking respond together to the filters.",
+            "title": "Library",
             "filters": "Explore the collection",
-            "search": "Search",
-            "search_hint": "Title, author, publisher, place…",
             "period": "Period",
             "language": "Language",
             "category": "Category",
@@ -204,12 +196,8 @@ def library_statistics_section(language: str) -> str:
             "publishers": "Main publishers",
         },
         "it": {
-            "eyebrow": "Emeleta · Biblioteca",
-            "title": "Statistiche della biblioteca",
-            "intro": "Panoramica interattiva del fondo. Indicatori, grafici, mappa e classifica dei luoghi di edizione reagiscono insieme ai filtri.",
+            "title": "Biblioteca",
             "filters": "Esplora il fondo",
-            "search": "Ricerca",
-            "search_hint": "Titolo, autore, editore, luogo…",
             "period": "Periodo",
             "language": "Lingua",
             "category": "Categoria",
@@ -227,13 +215,10 @@ def library_statistics_section(language: str) -> str:
 
 <div class="statistics-page library-statistics" data-library-statistics data-data-url="assets/data/bibliotheque-statistiques.json">
 <header class="statistics-hero">
-<p class="eyebrow">{labels["eyebrow"]}</p>
 <h2>{labels["title"]}</h2>
-<p>{labels["intro"]}</p>
 </header>
 
 <section class="library-filters" aria-label="{labels["filters"]}">
-<label>{labels["search"]}<input type="search" data-filter="search" placeholder="{labels["search_hint"]}"></label>
 <label>{labels["period"]}<select data-filter="period"></select></label>
 <label>{labels["language"]}<select data-filter="language"></select></label>
 <label>{labels["category"]}<select data-filter="category"></select></label>
@@ -600,8 +585,7 @@ def main() -> int:
         for label, count in sorted(categories.items())
     )
     catalogue = f"""<div class="catalogue-heading">
-  <p class="eyebrow">Collection complète</p>
-  <h1>Catalogue</h1>
+  <h1>Inventaire</h1>
 </div>
 
 <form class="catalog-filters" data-catalog-filters>
