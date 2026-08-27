@@ -1,6 +1,6 @@
 <header class="home-intro">
   <h1>Trinketa</h1>
-  <p><em>by</em> Baboulet</p>
+  <p><em>by</em> Baboulinet</p>
 </header>
 
 <div class="collection-portals">
