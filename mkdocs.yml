@@ -45,10 +45,10 @@ plugins:
           build: true
           nav_translations:
             Accueil: Home
-            Catalogue: Catalogue
+            Inventaire: Inventory
             Bibliothèque: Library
             Statistiques: Statistics
-            Contacts: Contact
+            Contact: Contact
           theme:
             language: en
         - locale: it
@@ -56,10 +56,10 @@ plugins:
           build: true
           nav_translations:
             Accueil: Home
-            Catalogue: Catalogo
+            Inventaire: Inventario
             Bibliothèque: Biblioteca
             Statistiques: Statistiche
-            Contacts: Contatti
+            Contact: Contatto
           theme:
             language: it
   - search:
@@ -89,9 +89,9 @@ extra_javascript:
 
 nav:
   - Accueil: index.md
-  - Catalogue: catalogue/index.md
+  - Inventaire: catalogue/index.md
   - Bibliothèque: bibliotheque/index.md
   - Statistiques: statistiques.md
-  - Contacts: contacts.md
+  - Contact: contacts.md
 
 copyright: © Baboulinet · 2026 — Tous droits réservés
