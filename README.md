@@ -2,6 +2,31 @@
 
 Site statique MkDocs d'inventaire du mobilier et des livres anciens, alimenté par les classeurs `inventaire_mobilier.xlsx` et `inventaire_bibliotheque.xlsx`, publié sur GitHub Pages : https://nicocoquet.github.io/trinketa/
 
+## Comment fonctionne la génération
+
+Les deux classeurs et le dossier `photos/` sont les sources de référence. Les
+pages de catalogue ne doivent pas être corrigées à la main : elles sont recréées
+à chaque déploiement dans cet ordre :
+
+1. `scripts/generate_mobilier.py` produit le catalogue du mobilier et la page
+   Statistiques commune ;
+2. `scripts/generate_bibliotheque.py` produit le catalogue des livres et le
+   fichier `docs/assets/data/bibliotheque-statistiques.json` ;
+3. MkDocs transforme le dossier `docs/` en site statique et le publie.
+
+Le fichier JSON des statistiques est une sortie technique générée. Le
+JavaScript le lit dans le navigateur pour construire les indicateurs, les
+graphiques, les filtres et la carte. Il ne faut pas le modifier manuellement.
+
+Pour vérifier localement l'ensemble du processus :
+
+```bash
+python -m pip install -r requirements.txt
+python scripts/generate_mobilier.py
+python scripts/generate_bibliotheque.py
+mkdocs build --strict
+```
+
 ## Inventaire du mobilier
 
 ### Mise à jour courante

@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
-"""Génère les pages MkDocs depuis inventaire_mobilier.xlsx."""
+"""Construit la partie « Mobilier » du site MkDocs à partir d'Excel.
+
+Entrées : ``inventaire_mobilier.xlsx`` (feuilles ``Mobilier`` et ``Photos``)
+et les originaux du dossier ``photos/``.
+
+Sorties : fiches et index sous ``docs/catalogue/``, copies d'images sous
+``docs/assets/images/`` et page Statistiques commune aux deux inventaires.
+Cette page contient le mobilier ainsi que le conteneur dont les données seront
+créées ensuite par ``generate_bibliotheque.py``.
+
+Le script est déterministe et peut donc être relancé à chaque déploiement.
+"""
 
 from __future__ import annotations
 
@@ -23,16 +34,19 @@ STATISTICS = {locale: DOCS / f"statistiques.{locale}.md" for locale in ("fr", "e
 
 
 def text(value) -> str:
+    """Convertit une cellule Excel en texte nettoyé, ou en chaîne vide."""
     return "" if value is None else str(value).strip()
 
 
 def slug(value: str) -> str:
+    """Produit un identifiant CSS simplifié à partir d'un libellé."""
     value = value.lower().strip()
     value = re.sub(r"[^a-z0-9-]+", "-", value)
     return value.strip("-")
 
 
 def money(value) -> str:
+    """Formate un montant en euros sans décimales inutiles."""
     if value in (None, ""):
         return ""
     try:
@@ -42,6 +56,7 @@ def money(value) -> str:
 
 
 def number(value) -> float | None:
+    """Convertit une valeur en nombre flottant ; renvoie ``None`` sinon."""
     if value in (None, ""):
         return None
     try:
@@ -51,11 +66,13 @@ def number(value) -> float | None:
 
 
 def quantity(obj: dict) -> int:
+    """Retourne la quantité physique du lot, avec 1 comme valeur de repli."""
     value = number(obj.get("Quantité"))
     return max(1, int(value)) if value is not None else 1
 
 
 def unit_value(obj: dict, side: str) -> float | None:
+    """Lit l'estimation unitaire basse ou haute d'un objet."""
     return number(obj.get(f"Estimation unitaire {side} (€)")) or number(obj.get(f"Estimation {side} (€)"))
 
 
@@ -69,10 +86,12 @@ def lot_value(obj: dict, side: str) -> float | None:
 
 
 def estimate_range(low, high) -> str:
+    """Présente une estimation basse/haute sous une forme lisible."""
     return " – ".join(v for v in [money(low), money(high)] if v) or "Non renseignée"
 
 
 def treemap(data: Counter, empty_label: str = "Aucune donnée") -> str:
+    """Génère les rectangles HTML d'une treemap proportionnelle aux effectifs."""
     if not data:
         return f'<p class="empty-state">{html.escape(empty_label)}</p>'
     total = sum(data.values())
@@ -90,6 +109,7 @@ def treemap(data: Counter, empty_label: str = "Aucune donnée") -> str:
 
 
 def top_with_other(data: Counter, limit: int = 12) -> Counter:
+    """Conserve les catégories principales et regroupe les autres sous « Autres »."""
     ordered = data.most_common()
     if len(ordered) <= limit:
         return data
@@ -141,6 +161,11 @@ def location_category_histogram(furniture: list[dict], category_limit: int = 9) 
 
 
 def library_statistics_section(language: str) -> str:
+    """Crée le conteneur des statistiques des livres dans la page commune.
+
+    Les valeurs sont chargées côté navigateur depuis le JSON produit par
+    ``generate_bibliotheque.py``.
+    """
     labels = {
         "fr": {
             "eyebrow": "Emeleta · Bibliothèque",
@@ -248,6 +273,7 @@ def library_statistics_section(language: str) -> str:
 
 
 def generate_statistics(furniture: list[dict]) -> None:
+    """Calcule et écrit la page Statistiques commune aux deux inventaires."""
     lows = [value for obj in furniture if (value := lot_value(obj, "basse")) is not None]
     highs = [value for obj in furniture if (value := lot_value(obj, "haute")) is not None]
     total_low = sum(lows)
@@ -360,6 +386,7 @@ def generate_statistics(furniture: list[dict]) -> None:
 
 
 def rows_as_dicts(sheet, header_row: int = 3):
+    """Transforme chaque ligne Excel non vide en dictionnaire nommé par colonne."""
     headers = [text(cell.value) for cell in sheet[header_row]]
     for row in sheet.iter_rows(min_row=header_row + 1, values_only=True):
         values = {headers[i]: row[i] if i < len(row) else None for i in range(len(headers))}
@@ -368,12 +395,14 @@ def rows_as_dicts(sheet, header_row: int = 3):
 
 
 def require_columns(actual: set[str], expected: set[str], sheet_name: str):
+    """Interrompt la génération si une colonne indispensable a été renommée."""
     missing = expected - actual
     if missing:
         raise ValueError(f"Feuille {sheet_name}: colonnes manquantes: {', '.join(sorted(missing))}")
 
 
 def main() -> int:
+    """Orchestre la lecture Excel, les images et la génération des pages."""
     if not WORKBOOK.exists():
         print(f"Classeur introuvable: {WORKBOOK}", file=sys.stderr)
         return 1

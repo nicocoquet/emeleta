@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
-"""Génère la bibliothèque MkDocs depuis inventaire_bibliotheque.xlsx."""
+"""Construit la partie « Bibliothèque » du site MkDocs à partir d'Excel.
+
+Entrées : ``inventaire_bibliotheque.xlsx`` (feuille ``Catalogue``) et les
+originaux placés dans ``photos/bibliotheque/``.
+
+Sorties : notices et index sous ``docs/bibliotheque/``, copies d'images sous
+``docs/assets/images/bibliotheque/`` et jeu de données
+``docs/assets/data/bibliotheque-statistiques.json``.
+
+Le JSON est l'interface entre Python et le navigateur : le générateur y place
+les données nettoyées, puis ``bibliotheque-statistiques.js`` les charge pour
+construire filtres, indicateurs, graphiques, classements et carte. Il ne doit
+donc jamais être modifié à la main.
+
+Ce script s'exécute après ``generate_mobilier.py`` dans le workflow.
+"""
 
 from __future__ import annotations
 
@@ -82,10 +97,12 @@ REQUIRED_COLUMNS = {
 
 
 def text(value) -> str:
+    """Convertit une cellule Excel en texte nettoyé, ou en chaîne vide."""
     return "" if value is None else str(value).strip()
 
 
 def first_value(book: dict, *names: str) -> str:
+    """Retourne la première valeur renseignée parmi plusieurs colonnes possibles."""
     for name in names:
         value = text(book.get(name))
         if value:
@@ -94,14 +111,17 @@ def first_value(book: dict, *names: str) -> str:
 
 
 def split_values(value) -> list[str]:
+    """Découpe un champ multivalué séparé par des points-virgules."""
     return [item.strip() for item in text(value).split(";") if item.strip()]
 
 
 def normalize_author(value: str) -> str:
+    """Retire le rôle entre crochets pour stabiliser la facette d'auteur."""
     return re.sub(r"\s*\[[^\]]+\]\s*$", "", value).strip()
 
 
 def display_author(value: str) -> str:
+    """Met en forme les auteurs et leurs rôles pour l'affichage public."""
     authors = []
     for item in split_values(value):
         match = re.match(r"^(.*?)\s*\[([^\]]+)\]\s*$", item)
@@ -113,6 +133,7 @@ def display_author(value: str) -> str:
 
 
 def display_responsibilities(value: str) -> str:
+    """Met en forme traducteurs, préfaciers, illustrateurs et autres rôles."""
     items = []
     for item in split_values(value):
         match = re.match(r"^(.*?)\s*\[([^\]]+)\]\s*$", item)
@@ -124,10 +145,12 @@ def display_responsibilities(value: str) -> str:
 
 
 def author_facets(value: str) -> list[str]:
+    """Retourne les noms normalisés utilisés par le filtre des auteurs."""
     return [normalize_author(item) for item in split_values(value)]
 
 
 def publication_bucket(value) -> str:
+    """Classe une date libre dans une période utilisée par les statistiques."""
     match = re.search(r"\b(\d{4})\b", text(value))
     if not match:
         return "Date à préciser"
@@ -144,11 +167,13 @@ def publication_bucket(value) -> str:
 
 
 def publication_year(value):
+    """Extrait une année exploitable d'une date libre, ou renvoie ``None``."""
     match = re.search(r"\b(1[0-9]{3}|20[0-9]{2})\b", text(value))
     return int(match.group(1)) if match else None
 
 
 def number(value):
+    """Convertit une cellule numérique, y compris avec une virgule décimale."""
     if value in (None, ""):
         return None
     try:
@@ -158,11 +183,13 @@ def number(value):
 
 
 def normalized_key(value: str) -> str:
+    """Normalise casse et accents pour comparer des libellés de façon robuste."""
     value = unicodedata.normalize("NFD", text(value).casefold())
     return "".join(ch for ch in value if unicodedata.category(ch) != "Mn").strip()
 
 
 def location_data(book: dict):
+    """Résout ville, pays et coordonnées, avec repli sur ``KNOWN_CITIES``."""
     city = first_value(book, "Ville_normalisee", "Lieu_publication")
     country = text(book.get("Pays_normalise"))
     latitude = number(book.get("Latitude"))
@@ -177,15 +204,18 @@ def location_data(book: dict):
 
 
 def truthy(value) -> bool:
+    """Reconnaît les principales écritures de « oui » dans les trois langues."""
     return normalized_key(text(value)) in {"oui", "yes", "si", "true", "1"}
 
 
 def slug_sort(value: str) -> str:
+    """Produit une clé de tri insensible aux accents et à la casse."""
     normalized = unicodedata.normalize("NFD", value)
     return "".join(ch for ch in normalized if unicodedata.category(ch) != "Mn").casefold()
 
 
 def rows_as_dicts(sheet):
+    """Transforme chaque ligne Excel non vide en dictionnaire nommé par colonne."""
     headers = [text(cell.value) for cell in sheet[1]]
     for row in sheet.iter_rows(min_row=2, values_only=True):
         if not any(value not in (None, "") for value in row):
@@ -194,6 +224,7 @@ def rows_as_dicts(sheet):
 
 
 def require_columns(sheet):
+    """Interrompt la génération si une colonne indispensable a été renommée."""
     actual = {text(cell.value) for cell in sheet[1]}
     missing = REQUIRED_COLUMNS - actual
     if missing:
@@ -201,10 +232,12 @@ def require_columns(sheet):
 
 
 def data_attr(values) -> str:
+    """Encode plusieurs facettes dans un attribut HTML séparé par ``||``."""
     return "||".join(values)
 
 
 def copy_photo(filename: str, warnings: list[str]) -> str:
+    """Copie une photo vers MkDocs et signale une absence sans bloquer le site."""
     filename = Path(filename).name
     if not filename:
         return ""
@@ -218,12 +251,14 @@ def copy_photo(filename: str, warnings: list[str]) -> str:
 
 
 def field(label: str, value: str) -> str:
+    """Construit une paire libellé/valeur HTML si elle est renseignée."""
     if not value:
         return ""
     return f'<div class="record-field"><dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd></div>'
 
 
 def metadata_html(book: dict) -> str:
+    """Construit le bloc de description bibliographique d'une notice."""
     publication = ", ".join(
         part for part in [
             text(book.get("Lieu_publication")),
@@ -256,6 +291,7 @@ def metadata_html(book: dict) -> str:
 
 
 def indexing_html(book: dict) -> str:
+    """Construit le bloc d'indexation thématique et chronologique."""
     fields = [
         ("Thème", text(book.get("Sujet"))),
         ("Lieu", text(book.get("Lieu_sujet"))),
@@ -266,6 +302,7 @@ def indexing_html(book: dict) -> str:
 
 
 def notice_html(book: dict) -> str:
+    """Construit les informations de provenance et de contrôle de la notice."""
     fields = [
         ("Source de la notice", text(book.get("Source_notice"))),
         ("Identifiant de la notice", text(book.get("Identifiant_notice"))),
@@ -277,6 +314,7 @@ def notice_html(book: dict) -> str:
 
 
 def exemplar_html(book: dict) -> str:
+    """Construit les particularités propres à l'exemplaire inventorié."""
     fields = [
         ("Ex-libris", text(book.get("Ex_libris"))),
         ("Dédicace / annotations", text(book.get("Dedicace_annotations"))),
@@ -286,6 +324,7 @@ def exemplar_html(book: dict) -> str:
 
 
 def render_select(name: str, label: str, values: list[str]) -> str:
+    """Construit une liste déroulante de facette triée et échappée."""
     options = ['<option value="">Tous</option>']
     options.extend(
         f'<option value="{html.escape(value, quote=True)}">{html.escape(value)}</option>'
@@ -298,6 +337,7 @@ def render_select(name: str, label: str, values: list[str]) -> str:
 
 
 def statistics_page(language: str, count: int) -> str:
+    """Construit l'ancienne page statistique autonome, hors navigation actuelle."""
     copies = {
         "fr": {
             "eyebrow": "Emeleta · Bibliothèque",
@@ -374,6 +414,7 @@ def statistics_page(language: str, count: int) -> str:
 
 
 def main() -> int:
+    """Orchestre notices, index, images et jeu de données statistiques JSON."""
     if not WORKBOOK.exists():
         print(f"Classeur introuvable : {WORKBOOK}", file=sys.stderr)
         return 1
