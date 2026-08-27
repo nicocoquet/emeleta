@@ -1,6 +1,6 @@
 <header class="home-intro">
   <h1>Trinketa</h1>
-  <p>Italie</p>
+  <p><em>by</em> Baboulet</p>
 </header>
 
 <div class="collection-portals">
