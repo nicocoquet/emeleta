@@ -18,6 +18,11 @@ Le fichier JSON des statistiques est une sortie technique générée. Le
 JavaScript le lit dans le navigateur pour construire les indicateurs, les
 graphiques, les filtres et la carte. Il ne faut pas le modifier manuellement.
 
+Les fiches Markdown des catalogues, la page Statistiques, le JSON et les copies
+des photographies sont également des sorties générées. Elles sont exclues de
+Git par `.gitignore` : leur absence dans l'arborescence de la branche `main` est
+normale. Elles sont recréées avant chaque construction du site.
+
 Pour vérifier localement l'ensemble du processus :
 
 ```bash

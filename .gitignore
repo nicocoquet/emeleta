@@ -4,4 +4,15 @@ __pycache__/
 .DS_Store
 .venv/
 inventaire_mobilier.xlsx.inspect.ndjson
-docs/assets/images/
+
+# Pages et données recréées par les deux générateurs avant chaque build.
+docs/catalogue/MOB-*.fr.md
+docs/catalogue/index.fr.md
+docs/bibliotheque/BIB-*.fr.md
+docs/bibliotheque/index.fr.md
+docs/statistiques.*.md
+docs/assets/data/bibliotheque-statistiques.json
+
+# Copies de travail des photographies. Les originaux restent dans photos/.
+docs/assets/images/MOB-*
+docs/assets/images/bibliotheque/
