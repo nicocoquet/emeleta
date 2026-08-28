@@ -119,6 +119,40 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
   }
 }
 
+/* Sommaire de page : traitement léger et repère actif terre cuite. */
+@media screen and (min-width: 76.25em) {
+  .md-main:has(.stat-cards) .md-sidebar--secondary .md-nav--secondary {
+    padding-left: .8rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .md-main:has(.stat-cards) .md-sidebar--secondary .md-nav__title {
+    padding-left: 0;
+    color: var(--muted);
+    background: transparent;
+    box-shadow: none;
+    font-size: .58rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .md-main:has(.stat-cards) .md-sidebar--secondary .md-nav__link {
+    color: var(--muted);
+  }
+
+  .md-main:has(.stat-cards) .md-sidebar--secondary .md-nav__link:hover {
+    color: var(--ink);
+  }
+
+  .md-main:has(.stat-cards) .md-sidebar--secondary .md-nav__link--active {
+    margin-left: -.8rem;
+    padding-left: .65rem;
+    color: var(--wine);
+    box-shadow: inset 2px 0 0 #b87961;
+  }
+}
+
 .md-typeset { color: var(--ink); font-size: .82rem; line-height: 1.7; }
 .md-typeset h1, .md-typeset h2, .md-typeset h3 { color: var(--ink); font-family: var(--serif); font-weight: 500; letter-spacing: -.018em; }
 .md-typeset h1 { margin: 0 0 1.2rem; font-size: clamp(2.6rem, 5vw, 5rem); line-height: .96; }
@@ -264,14 +298,24 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .card-estimate strong { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
 .catalog-card:hover > a > img { transform: scale(1.018); filter: brightness(.94); }
 .catalog-card:hover h2 { color: var(--wine); }
-.card-placeholder { display: grid; place-items: center; color: var(--muted); font-family: var(--serif); font-size: 1.2rem; }
+.card-placeholder { display: grid; position: relative; overflow: hidden; place-items: center; color: var(--muted); font-family: var(--serif); font-size: 1.2rem; isolation: isolate; }
+.card-placeholder::before, .record-placeholder::before {
+  position: absolute;
+  z-index: -1;
+  inset: 8%;
+  background: url("../assets/images/ecusson.png") center / contain no-repeat;
+  content: "";
+  filter: grayscale(1);
+  opacity: .055;
+  pointer-events: none;
+}
 
 /* Fiche de lot */
 .lot-hero { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(20rem, .82fr); min-height: 42rem; margin: -2.2rem -2rem 3rem; background: var(--surface); border-bottom: 1px solid var(--line); }
 .lot-visual { display: grid; min-height: 42rem; padding: clamp(1.5rem, 4vw, 4rem); place-items: center; background: var(--image-ground); }
 .lot-visual a { display: contents; }
 .lot-visual img { display: block; width: 100%; height: 100%; max-height: 38rem; object-fit: contain; }
-.record-placeholder { display: grid; width: 100%; height: 100%; min-height: 30rem; place-items: center; color: var(--muted); font-family: var(--serif); font-size: 1.5rem; }
+.record-placeholder { display: grid; position: relative; width: 100%; height: 100%; min-height: 30rem; overflow: hidden; place-items: center; color: var(--muted); font-family: var(--serif); font-size: 1.5rem; isolation: isolate; }
 .lot-summary { display: flex; padding: clamp(2.5rem, 5vw, 5.2rem); flex-direction: column; justify-content: center; }
 .lot-summary h1 { margin: 1.25rem 0 .75rem; font-size: clamp(2.8rem, 5vw, 5.2rem); }
 .lot-dating { margin: 0 0 2rem; color: var(--muted); font-family: var(--serif); font-size: 1.25rem; }
@@ -291,6 +335,19 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .notice, .empty-state { padding: 1rem 1.2rem; color: var(--muted); border-left: 2px solid var(--wine); background: var(--surface); }
 
 /* Statistiques */
+.md-main:has(.stat-cards) .admonition.note {
+  color: var(--ink);
+  border-color: var(--wine);
+  background: color-mix(in srgb, var(--wine) 5%, var(--surface));
+  box-shadow: none;
+}
+.md-main:has(.stat-cards) .admonition.note > .admonition-title {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--wine) 11%, transparent);
+}
+.md-main:has(.stat-cards) .admonition.note > .admonition-title::before {
+  background-color: var(--wine);
+}
 .stat-cards { display: grid; grid-template-columns: 1.35fr repeat(3, 1fr); margin: 1rem 0 4rem; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .stat-card { display: flex; min-height: 10rem; padding: 1.35rem 1.5rem; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); background: transparent; }
 .stat-card:last-child { border-right: 0; }
