@@ -4,7 +4,7 @@
   <p>You can write to us in Italian, French, English or Spanish.</p>
 </header>
 
-<form class="contact-form" data-contact-form data-recipient="">
+<form class="contact-form" data-contact-form>
   <div class="contact-field">
     <label for="contact-name">Name</label>
     <input id="contact-name" name="name" type="text" autocomplete="name" required>
@@ -23,6 +23,6 @@
   </div>
   <div class="contact-actions contact-field-wide">
     <button type="submit">Send<span>→</span></button>
-    <p class="contact-status" data-contact-status aria-live="polite">The destination address will be configured in the next step.</p>
+    <p class="contact-status">Sending will open your email application.</p>
   </div>
 </form>
