@@ -12,6 +12,9 @@
       "subjects": [
         "Littérature"
       ],
+      "publishers": [
+        "Bernard Grasset"
+      ],
       "documentTypes": [
         "Ouvrage"
       ],
@@ -39,6 +42,9 @@
       ],
       "subjects": [
         "Littérature"
+      ],
+      "publishers": [
+        "Les Éditions de l'Œil du Sphinx"
       ],
       "documentTypes": [
         "Ouvrage"

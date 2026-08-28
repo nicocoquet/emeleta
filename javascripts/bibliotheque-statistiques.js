@@ -34,10 +34,6 @@
   const money = new Intl.NumberFormat(lang, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
   const integer = new Intl.NumberFormat(lang, { maximumFractionDigits: 0 });
   const esc = value => String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
-  const values = (records, key) => [...new Set(records.flatMap(record => {
-    const value = record[key];
-    return Array.isArray(value) ? value : value ? [value] : [];
-  }))].sort((a, b) => String(a).localeCompare(String(b), lang));
   const averageEstimate = record => {
     const low = Number.isFinite(record.estimateLow) ? record.estimateLow : null;
     const high = Number.isFinite(record.estimateHigh) ? record.estimateHigh : null;
@@ -53,21 +49,6 @@
     try { data = await fetch(url).then(response => { if (!response.ok) throw new Error(response.status); return response.json(); }); }
     catch (error) { root.querySelector("[data-stat-empty]").hidden = false; return; }
     const records = data.records || [];
-    const filterKeys = ["period", "languages", "subjects", "documentTypes", "heritage"];
-    const filterLabels = [t.period, t.language, t.subject, t.document_type, t.heritage];
-    const filtersHost = root.querySelector("[data-stat-filters]");
-    const selections = {};
-    filterKeys.forEach((key, index) => {
-      const field = document.createElement("label");
-      field.className = "statistics-filter";
-      const select = document.createElement("select");
-      select.dataset.key = key;
-      select.innerHTML = `<option value="">${esc(t.all)}</option>` + values(records, key).map(value => `<option>${esc(value)}</option>`).join("");
-      field.innerHTML = `<span>${esc(filterLabels[index])}</span>`;
-      field.appendChild(select);
-      filtersHost.appendChild(field);
-      select.addEventListener("change", () => { selections[key] = select.value; render(); });
-    });
 
     let metric = "count";
     const metricHost = root.querySelector("[data-map-metric]");
@@ -80,13 +61,7 @@
       render();
     });
 
-    root.querySelector("[data-stat-reset]").addEventListener("click", () => {
-      Object.keys(selections).forEach(key => delete selections[key]);
-      filtersHost.querySelectorAll("select").forEach(select => select.value = "");
-      render();
-    });
-
-    const mapNode = root.querySelector("#library-map");
+    const mapNode = root.querySelector("[data-library-map]");
     const map = window.L ? L.map(mapNode, { scrollWheelZoom: false }).setView([46.8, 6.5], 4) : null;
     let layer = null;
     if (map) {
@@ -97,15 +72,6 @@
       setTimeout(() => map.invalidateSize(), 0);
     } else {
       mapNode.innerHTML = `<p>${esc(t.noMap)}</p>`;
-    }
-
-    function selected(recordsToFilter) {
-      return recordsToFilter.filter(record => filterKeys.every(key => {
-        const wanted = selections[key];
-        if (!wanted) return true;
-        const value = record[key];
-        return Array.isArray(value) ? value.includes(wanted) : value === wanted;
-      }));
     }
 
     function aggregatePlaces(filtered) {
@@ -140,8 +106,7 @@
         [money.format(median), t.median],
         [integer.format(places.filter(p => Number.isFinite(p.latitude) && Number.isFinite(p.longitude)).length), t.mapped],
       ];
-      root.querySelector("[data-stat-kpis]").innerHTML = cards.map(([value, label]) => `<article><strong>${esc(value)}</strong><span>${esc(label)}</span></article>`).join("");
-      root.querySelector("[data-stat-result-count]").textContent = integer.format(filtered.length);
+      root.querySelector("[data-kpis]").innerHTML = cards.map(([value, label]) => `<article><strong>${esc(value)}</strong><span>${esc(label)}</span></article>`).join("");
     }
 
     function renderMap(places) {
@@ -166,7 +131,7 @@
     }
 
     function renderRanking(places) {
-      const host = root.querySelector("[data-city-ranking]");
+      const host = root.querySelector('[data-ranking="cities"]');
       const max = Math.max(1, ...places.map(p => p[metric]));
       host.innerHTML = places.length ? places.slice(0, 12).map((place, index) => {
         const value = metric === "count" ? `${integer.format(place.count)} ${t.works}` : money.format(place.value);
@@ -183,23 +148,33 @@
       return [...counter].sort((a, b) => b[1] - a[1]).slice(0, 10);
     }
 
-    function renderCharts(filtered) {
-      const charts = [["period", t.period], ["languages", t.language], ["subjects", t.subject], ["documentTypes", t.document_type], ["heritage", t.heritage], ["completeness", t.completeness], ["illustrated", t.illustrated], ["marks", t.marks]];
-      root.querySelector("[data-stat-charts]").innerHTML = charts.map(([key, label]) => {
-        const entries = distribution(filtered, key);
-        const max = Math.max(1, ...entries.map(item => item[1]));
-        const bars = entries.map(([name, count]) => `<li><span>${esc(name)}</span><i><b style="width:${count / max * 100}%"></b></i><strong>${integer.format(count)}</strong></li>`).join("");
-        return `<article class="stat-chart"><h3>${esc(label)}</h3>${bars ? `<ol>${bars}</ol>` : `<p>${esc(t.noData)}</p>`}</article>`;
-      }).join("");
+    function renderDistribution(selector, filtered, key) {
+      const host = root.querySelector(selector);
+      const entries = distribution(filtered, key);
+      const max = Math.max(1, ...entries.map(item => item[1]));
+      host.innerHTML = entries.length
+        ? entries.map(([name, count]) => `<li><span>${esc(name)}</span><i><b style="width:${count / max * 100}%"></b></i><strong>${integer.format(count)}</strong></li>`).join("")
+        : `<li>${esc(t.noData)}</li>`;
+    }
+
+    function renderPublishers(filtered) {
+      const host = root.querySelector('[data-ranking="publishers"]');
+      const entries = distribution(filtered, "publishers");
+      const max = Math.max(1, ...entries.map(item => item[1]));
+      host.innerHTML = entries.length ? entries.map(([name, count], index) =>
+        `<article><span class="rank">${index + 1}</span><div><strong>${esc(name)}</strong><span class="rank-bar"><i style="width:${count / max * 100}%"></i></span></div><b>${integer.format(count)}</b></article>`
+      ).join("") : `<p>${esc(t.noData)}</p>`;
     }
 
     function render() {
-      const filtered = selected(records);
-      const places = aggregatePlaces(filtered);
-      renderKpis(filtered, places);
+      const places = aggregatePlaces(records);
+      renderKpis(records, places);
       renderMap(places);
       renderRanking(places);
-      renderCharts(filtered);
+      renderDistribution('[data-chart="periods"]', records, "period");
+      renderDistribution('[data-chart="languages"]', records, "languages");
+      renderDistribution('[data-chart="categories"]', records, "subjects");
+      renderPublishers(records);
     }
     render();
   }
