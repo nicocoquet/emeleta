@@ -171,11 +171,6 @@ def library_statistics_section(language: str) -> str:
     labels = {
         "fr": {
             "title": "Bibliothèque",
-            "filters": "Explorer le fonds",
-            "period": "Période",
-            "language": "Langue",
-            "category": "Catégorie",
-            "reset": "Réinitialiser",
             "map": "Carte des lieux d’édition",
             "cities": "Principaux lieux d’édition",
             "periods": "Répartition par période",
@@ -185,11 +180,6 @@ def library_statistics_section(language: str) -> str:
         },
         "en": {
             "title": "Library",
-            "filters": "Explore the collection",
-            "period": "Period",
-            "language": "Language",
-            "category": "Category",
-            "reset": "Reset",
             "map": "Map of publishing places",
             "cities": "Main publishing places",
             "periods": "Distribution by period",
@@ -199,11 +189,6 @@ def library_statistics_section(language: str) -> str:
         },
         "it": {
             "title": "Biblioteca",
-            "filters": "Esplora il fondo",
-            "period": "Periodo",
-            "language": "Lingua",
-            "category": "Categoria",
-            "reset": "Reimposta",
             "map": "Mappa dei luoghi di edizione",
             "cities": "Principali luoghi di edizione",
             "periods": "Distribuzione per periodo",
@@ -215,46 +200,37 @@ def library_statistics_section(language: str) -> str:
     return f"""
 <hr class="statistics-divider">
 
-<div class="statistics-page library-statistics" data-library-statistics data-data-url="/trinketa/assets/data/bibliotheque-statistiques.json">
-<header class="statistics-hero">
-<h2>{labels["title"]}</h2>
-</header>
+## {labels["title"]}
 
-<section class="library-filters" aria-label="{labels["filters"]}">
-<label>{labels["period"]}<select data-filter="period"></select></label>
-<label>{labels["language"]}<select data-filter="language"></select></label>
-<label>{labels["category"]}<select data-filter="category"></select></label>
-<button type="button" data-reset-filters>{labels["reset"]}</button>
-</section>
+<div class="statistics-page library-statistics" data-library-statistics data-data-url="/trinketa/assets/data/bibliotheque-statistiques.json" markdown="1">
+<p class="catalog-empty" data-stat-empty hidden></p>
+<section class="statistics-kpis" data-kpis></section>
 
-<section class="library-kpis" data-kpis></section>
+### {labels["map"]}
 
-<div class="library-statistics-grid">
-<section class="library-panel library-map-panel">
-<h3>{labels["map"]}</h3>
+<div class="statistics-metric" data-map-metric></div>
 <div class="library-map" data-library-map></div>
-</section>
-<section class="library-panel">
-<h3>{labels["cities"]}</h3>
-<div class="library-ranking" data-ranking="cities"></div>
-</section>
-<section class="library-panel">
-<h3>{labels["periods"]}</h3>
-<div class="library-chart" data-chart="periods"></div>
-</section>
-<section class="library-panel">
-<h3>{labels["languages"]}</h3>
-<div class="library-chart" data-chart="languages"></div>
-</section>
-<section class="library-panel">
-<h3>{labels["categories"]}</h3>
-<div class="library-chart" data-chart="categories"></div>
-</section>
-<section class="library-panel">
-<h3>{labels["publishers"]}</h3>
-<div class="library-ranking" data-ranking="publishers"></div>
-</section>
-</div>
+<p class="map-empty" data-map-empty hidden></p>
+
+### {labels["cities"]}
+
+<div class="city-ranking" data-ranking="cities"></div>
+
+### {labels["periods"]}
+
+<div class="stat-chart"><ol data-chart="periods"></ol></div>
+
+### {labels["languages"]}
+
+<div class="stat-chart"><ol data-chart="languages"></ol></div>
+
+### {labels["categories"]}
+
+<div class="stat-chart"><ol data-chart="categories"></ol></div>
+
+### {labels["publishers"]}
+
+<div class="city-ranking" data-ranking="publishers"></div>
 </div>
 """
 
