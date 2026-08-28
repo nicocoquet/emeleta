@@ -394,6 +394,7 @@ def main() -> int:
             "period": publication_group,
             "languages": languages,
             "subjects": subjects,
+            "publishers": split_values(book.get("Editeur")),
             "documentTypes": document_types,
             "heritage": text(book.get("Interet_patrimonial")) or "À préciser",
             "completeness": text(book.get("Completude")) or "À préciser",
