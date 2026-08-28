@@ -104,9 +104,15 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 
 /* Menu mobile : repère actif inspiré d'un signet éditorial. */
 @media screen and (max-width: 76.234375em) {
+  /* Le tiroir MkDocs suppose un en-tête de 2,4rem ; le nôtre mesure 4,2rem. */
+  .md-sidebar--primary .md-nav__title[for="__drawer"] {
+    height: 7.4rem;
+    padding-top: 4.8rem;
+  }
+
   .md-nav__link--active {
-    margin-left: -.8rem;
-    padding: .45rem .65rem .45rem .8rem;
+    margin-left: 0;
+    padding: .45rem .65rem .45rem 1rem;
     color: #f2ede3 !important;
     background: rgba(184, 121, 97, .13);
     box-shadow: inset 3px 0 0 #b87961;
