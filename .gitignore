@@ -6,8 +6,8 @@ __pycache__/
 inventaire_mobilier.xlsx.inspect.ndjson
 
 # Pages et données recréées par les deux générateurs avant chaque build.
-docs/catalogue/MOB-*.fr.md
-docs/catalogue/index.fr.md
+docs/inventaire/MOB-*.fr.md
+docs/inventaire/index.fr.md
 docs/bibliotheque/BIB-*.fr.md
 docs/bibliotheque/index.fr.md
 docs/statistiques.*.md

@@ -5,10 +5,11 @@ Site statique MkDocs d'inventaire du mobilier et des livres anciens, alimenté p
 ## Comment fonctionne la génération
 
 Les deux classeurs et le dossier `photos/` sont les sources de référence. Les
-pages de catalogue ne doivent pas être corrigées à la main : elles sont recréées
+pages d’inventaire et de catalogue ne doivent pas être corrigées à la main : elles sont recréées
 à chaque déploiement dans cet ordre :
 
-1. `scripts/generate_mobilier.py` produit le catalogue du mobilier et la page
+1. `scripts/generate_mobilier.py` produit l’inventaire du mobilier sous
+   `docs/inventaire/` et la page
    Statistiques commune ;
 2. `scripts/generate_bibliotheque.py` produit le catalogue des livres et le
    fichier `docs/assets/data/bibliotheque-statistiques.json` ;
