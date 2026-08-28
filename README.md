@@ -9,7 +9,7 @@ pages d’inventaire et de catalogue ne doivent pas être corrigées à la main 
 à chaque déploiement dans cet ordre :
 
 1. `scripts/generate_mobilier.py` produit l’inventaire du mobilier sous
-   `docs/inventaire/` et la page
+   `docs/inventario/` et la page
    Statistiques commune ;
 2. `scripts/generate_bibliotheque.py` produit le catalogue des livres et le
    fichier `docs/assets/data/bibliotheque-statistiques.json` ;
