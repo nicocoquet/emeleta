@@ -4,7 +4,7 @@
 Entrées : ``inventaire_mobilier.xlsx`` (feuilles ``Mobilier`` et ``Photos``)
 et les originaux du dossier ``photos/``.
 
-Sorties : fiches et index sous ``docs/inventaire/``, copies d'images sous
+Sorties : fiches et index sous ``docs/inventario/``, copies d'images sous
 ``docs/assets/images/`` et page Statistiques commune aux deux inventaires.
 Cette page contient le mobilier ainsi que le conteneur dont les données seront
 créées ensuite par ``generate_bibliotheque.py``.
@@ -28,11 +28,11 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / "inventaire_mobilier.xlsx"
 SOURCE_PHOTOS = ROOT / "photos"
 DOCS = ROOT / "docs"
-INVENTORY_DIR = DOCS / "inventaire"
-LEGACY_CATALOG_DIR = DOCS / "catalogue"
+INVENTORY_DIR = DOCS / "inventario"
+LEGACY_INVENTORY_DIRS = (DOCS / "catalogue", DOCS / "inventaire")
 SITE_IMAGES = DOCS / "assets" / "images"
 SITE_IMAGES_URL = "/trinketa/assets/images"
-STATISTICS = {locale: DOCS / f"statistiques.{locale}.md" for locale in ("fr", "en", "it")}
+STATISTICS = {locale: DOCS / f"statistiche.{locale}.md" for locale in ("fr", "en", "it")}
 
 
 def text(value) -> str:
@@ -215,7 +215,7 @@ def library_statistics_section(language: str) -> str:
     return f"""
 <hr class="statistics-divider">
 
-<div class="statistics-page library-statistics" data-library-statistics data-data-url="assets/data/bibliotheque-statistiques.json">
+<div class="statistics-page library-statistics" data-library-statistics data-data-url="/trinketa/assets/data/bibliotheque-statistiques.json">
 <header class="statistics-hero">
 <h2>{labels["title"]}</h2>
 </header>
@@ -417,21 +417,26 @@ def main() -> int:
     INVENTORY_DIR.mkdir(parents=True, exist_ok=True)
     SITE_IMAGES.mkdir(parents=True, exist_ok=True)
     # Supprimer les anciennes sorties afin qu'une génération locale ne publie
-    # pas simultanément les URL /catalogue/ et /inventaire/.
-    if LEGACY_CATALOG_DIR.exists():
-        for legacy in [*LEGACY_CATALOG_DIR.glob("MOB-*.md"), *LEGACY_CATALOG_DIR.glob("index*.md")]:
-            legacy.unlink()
-        try:
-            LEGACY_CATALOG_DIR.rmdir()
-        except OSError:
-            # Conserver le dossier s'il contient un fichier qui n'appartient pas
-            # au générateur, afin de ne jamais supprimer un contenu manuel.
-            pass
+    # pas simultanément les anciennes URL et les chemins italiens retenus.
+    for legacy_dir in LEGACY_INVENTORY_DIRS:
+        if legacy_dir.exists():
+            for legacy in [*legacy_dir.glob("MOB-*.md"), *legacy_dir.glob("index*.md")]:
+                legacy.unlink()
+            try:
+                legacy_dir.rmdir()
+            except OSError:
+                # Conserver le dossier s'il contient un fichier qui n'appartient
+                # pas au générateur, afin de ne jamais supprimer un contenu manuel.
+                pass
 
     # Migration ponctuelle depuis l'ancienne structure non localisée.
     for legacy in [DOCS / "index.md", INVENTORY_DIR / "index.md", DOCS / "statistiques.md"]:
         if legacy.exists():
             legacy.unlink()
+    for locale in ("fr", "en", "it"):
+        legacy_statistics = DOCS / f"statistiques.{locale}.md"
+        if legacy_statistics.exists():
+            legacy_statistics.unlink()
     for legacy in INVENTORY_DIR.glob("MOB-*.md"):
         if not any(legacy.name.endswith(f".{locale}.md") for locale in ("fr", "en", "it")):
             legacy.unlink()

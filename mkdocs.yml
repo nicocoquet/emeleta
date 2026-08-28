@@ -90,9 +90,9 @@ extra_javascript:
 
 nav:
   - Accueil: index.md
-  - Inventaire: inventaire/index.md
-  - Bibliothèque: bibliotheque/index.md
-  - Statistiques: statistiques.md
-  - Contact: contact.md
+  - Inventaire: inventario/index.md
+  - Bibliothèque: biblioteca/index.md
+  - Statistiques: statistiche.md
+  - Contact: contatto.md
 
 copyright: © Baboulinet · 2026 — Tous droits réservés

@@ -4,7 +4,7 @@
 Entrées : ``inventaire_bibliotheque.xlsx`` (feuille ``Catalogue``) et les
 originaux placés dans ``photos/bibliotheque/``.
 
-Sorties : notices et index sous ``docs/bibliotheque/``, copies d'images sous
+Sorties : notices et index sous ``docs/biblioteca/``, copies d'images sous
 ``docs/assets/images/bibliotheque/`` et jeu de données
 ``docs/assets/data/bibliotheque-statistiques.json``.
 
@@ -32,7 +32,8 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / "inventaire_bibliotheque.xlsx"
 SOURCE_PHOTOS = ROOT / "photos" / "bibliotheque"
 DOCS = ROOT / "docs"
-LIBRARY = DOCS / "bibliotheque"
+LIBRARY = DOCS / "biblioteca"
+LEGACY_LIBRARY = DOCS / "bibliotheque"
 SITE_IMAGES = DOCS / "assets" / "images" / "bibliotheque"
 SITE_IMAGES_URL = "/trinketa/assets/images/bibliotheque"
 SITE_DATA = DOCS / "assets" / "data"
@@ -353,6 +354,14 @@ def main() -> int:
     known_ids = {text(book["ID"]).upper() for book in books}
     LIBRARY.mkdir(parents=True, exist_ok=True)
     SITE_IMAGES.mkdir(parents=True, exist_ok=True)
+    if LEGACY_LIBRARY.exists():
+        for legacy in [*LEGACY_LIBRARY.glob("BIB-*.md"), *LEGACY_LIBRARY.glob("index*.md"), *LEGACY_LIBRARY.glob("statistiques.*.md")]:
+            legacy.unlink()
+        try:
+            LEGACY_LIBRARY.rmdir()
+        except OSError:
+            # Ne pas supprimer un dossier contenant un fichier manuel inconnu.
+            pass
     for legacy in LIBRARY.glob("BIB-*.fr.md"):
         legacy.unlink()
     facet_values = {name: set() for name, _ in FACETS}
