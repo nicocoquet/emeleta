@@ -102,6 +102,23 @@ body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .md-sidebar { font-size: .72rem; }
 .md-nav__link--active { color: var(--wine); font-weight: 600; }
 
+/* Menu mobile : repère actif inspiré d'un signet éditorial. */
+@media screen and (max-width: 76.234375em) {
+  .md-nav__link--active {
+    margin-left: -.8rem;
+    padding: .45rem .65rem .45rem .8rem;
+    color: #f2ede3 !important;
+    background: rgba(184, 121, 97, .13);
+    box-shadow: inset 3px 0 0 #b87961;
+  }
+
+  .md-nav__link--active:hover,
+  .md-nav__link--active:focus-visible {
+    color: #fff !important;
+    background: rgba(184, 121, 97, .2);
+  }
+}
+
 .md-typeset { color: var(--ink); font-size: .82rem; line-height: 1.7; }
 .md-typeset h1, .md-typeset h2, .md-typeset h3 { color: var(--ink); font-family: var(--serif); font-weight: 500; letter-spacing: -.018em; }
 .md-typeset h1 { margin: 0 0 1.2rem; font-size: clamp(2.6rem, 5vw, 5rem); line-height: .96; }
