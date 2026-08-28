@@ -34,6 +34,7 @@ SOURCE_PHOTOS = ROOT / "photos" / "bibliotheque"
 DOCS = ROOT / "docs"
 LIBRARY = DOCS / "bibliotheque"
 SITE_IMAGES = DOCS / "assets" / "images" / "bibliotheque"
+SITE_IMAGES_URL = "/trinketa/assets/images/bibliotheque"
 SITE_DATA = DOCS / "assets" / "data"
 
 # Facettes retenues pour la bibliothèque Emeleta : pas de localisation,
@@ -408,21 +409,21 @@ def main() -> int:
             if (copied := copy_photo(item, warnings))
         ]
         cover_html = (
-            f'<a href="../../assets/images/bibliotheque/{html.escape(cover)}" target="_blank">'
-            f'<img src="../../assets/images/bibliotheque/{html.escape(cover)}" alt="Couverture — {html.escape(title)}"></a>'
+            f'<a href="{SITE_IMAGES_URL}/{html.escape(cover)}" target="_blank">'
+            f'<img src="{SITE_IMAGES_URL}/{html.escape(cover)}" alt="Couverture — {html.escape(title)}"></a>'
             if cover else '<div class="record-placeholder book-placeholder">Sans photographie</div>'
         )
         gallery_items = []
         if biblio_photo:
             gallery_items.append(
-                f'<figure><a href="../../assets/images/bibliotheque/{html.escape(biblio_photo)}" target="_blank">'
-                f'<img src="../../assets/images/bibliotheque/{html.escape(biblio_photo)}" alt="Informations bibliographiques — {html.escape(title)}" loading="lazy"></a>'
+                f'<figure><a href="{SITE_IMAGES_URL}/{html.escape(biblio_photo)}" target="_blank">'
+                f'<img src="{SITE_IMAGES_URL}/{html.escape(biblio_photo)}" alt="Informations bibliographiques — {html.escape(title)}" loading="lazy"></a>'
                 f'<figcaption>Page de titre / informations bibliographiques</figcaption></figure>'
             )
         for filename in extra_photos:
             gallery_items.append(
-                f'<figure><a href="../../assets/images/bibliotheque/{html.escape(filename)}" target="_blank">'
-                f'<img src="../../assets/images/bibliotheque/{html.escape(filename)}" alt="{html.escape(title)}" loading="lazy"></a>'
+                f'<figure><a href="{SITE_IMAGES_URL}/{html.escape(filename)}" target="_blank">'
+                f'<img src="{SITE_IMAGES_URL}/{html.escape(filename)}" alt="{html.escape(title)}" loading="lazy"></a>'
                 f'<figcaption>Photographie complémentaire</figcaption></figure>'
             )
         gallery = "\n".join(gallery_items) or '<p class="empty-state">Aucune photographie complémentaire.</p>'
@@ -446,7 +447,7 @@ def main() -> int:
             for name, values in per_book_facets.items()
         )
         visual = (
-            f'<img src="../assets/images/bibliotheque/{html.escape(cover)}" alt="{html.escape(title)}" loading="lazy">'
+            f'<img src="{SITE_IMAGES_URL}/{html.escape(cover)}" alt="{html.escape(title)}" loading="lazy">'
             if cover else '<div class="card-placeholder book-placeholder">Sans photographie</div>'
         )
         author_label = " · ".join(authors) or "Auteur non renseigné"
