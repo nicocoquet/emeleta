@@ -62,6 +62,40 @@
       "latitude": null,
       "longitude": null,
       "locationUncertain": true
+    },
+    {
+      "id": "BIB-003",
+      "title": "Si tu veux entrer dans la vie",
+      "year": 2013,
+      "period": "Après 2000",
+      "languages": [
+        "Français"
+      ],
+      "subjects": [
+        "Spiritualité chrétienne",
+        "Développement spirituel",
+        "Pardon",
+        "Guérison"
+      ],
+      "publishers": [
+        "Nouvelle Cité"
+      ],
+      "documentTypes": [
+        "Ouvrage"
+      ],
+      "heritage": "À préciser",
+      "completeness": "À préciser",
+      "illustrated": "À préciser",
+      "marks": [],
+      "volumes": 1,
+      "estimateLow": null,
+      "estimateHigh": null,
+      "cityHistorical": "Bruyères-le-Châtel",
+      "city": "Bruyères-le-Châtel",
+      "country": "",
+      "latitude": null,
+      "longitude": null,
+      "locationUncertain": false
     }
   ],
   "facets": [

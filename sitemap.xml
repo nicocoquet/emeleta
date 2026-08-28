@@ -41,6 +41,14 @@
         <xhtml:link rel="alternate" hreflang="it" href="https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-002/"/>
     </url>
     <url>
+        <loc>https://nicocoquet.github.io/trinketa/biblioteca/BIB-003/</loc>
+        <lastmod>2026-08-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://nicocoquet.github.io/trinketa/biblioteca/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://nicocoquet.github.io/trinketa/en/biblioteca/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-003/"/>
+    </url>
+    <url>
         <loc>https://nicocoquet.github.io/trinketa/biblioteca/</loc>
         <lastmod>2026-08-28</lastmod>
         <changefreq>daily</changefreq>
@@ -977,6 +985,14 @@
         <xhtml:link rel="alternate" hreflang="it" href="https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-002/"/>
     </url>
     <url>
+        <loc>https://nicocoquet.github.io/trinketa/en/biblioteca/BIB-003/</loc>
+        <lastmod>2026-08-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://nicocoquet.github.io/trinketa/en/biblioteca/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://nicocoquet.github.io/trinketa/biblioteca/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-003/"/>
+    </url>
+    <url>
         <loc>https://nicocoquet.github.io/trinketa/en/biblioteca/</loc>
         <lastmod>2026-08-28</lastmod>
         <changefreq>daily</changefreq>
@@ -1911,6 +1927,14 @@
         <xhtml:link rel="alternate" hreflang="it" href="https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-002/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://nicocoquet.github.io/trinketa/en/biblioteca/BIB-002/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://nicocoquet.github.io/trinketa/biblioteca/BIB-002/"/>
+    </url>
+    <url>
+        <loc>https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-003/</loc>
+        <lastmod>2026-08-28</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="it" href="https://nicocoquet.github.io/trinketa/it/biblioteca/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://nicocoquet.github.io/trinketa/en/biblioteca/BIB-003/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://nicocoquet.github.io/trinketa/biblioteca/BIB-003/"/>
     </url>
     <url>
         <loc>https://nicocoquet.github.io/trinketa/it/biblioteca/</loc>
