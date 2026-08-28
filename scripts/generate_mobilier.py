@@ -31,6 +31,7 @@ DOCS = ROOT / "docs"
 INVENTORY_DIR = DOCS / "inventaire"
 LEGACY_CATALOG_DIR = DOCS / "catalogue"
 SITE_IMAGES = DOCS / "assets" / "images"
+SITE_IMAGES_URL = "/trinketa/assets/images"
 STATISTICS = {locale: DOCS / f"statistiques.{locale}.md" for locale in ("fr", "en", "it")}
 
 
@@ -508,8 +509,8 @@ def main() -> int:
             filename = Path(text(photo["Fichier"])).name
             caption = text(photo["Légende"]) or title
             gallery.append(
-                f'<figure><a href="../../assets/images/{html.escape(filename)}" target="_blank">'
-                f'<img src="../../assets/images/{html.escape(filename)}" alt="{html.escape(caption)}" loading="lazy"></a>'
+                f'<figure><a href="{SITE_IMAGES_URL}/{html.escape(filename)}" target="_blank">'
+                f'<img src="{SITE_IMAGES_URL}/{html.escape(filename)}" alt="{html.escape(caption)}" loading="lazy"></a>'
                 f'<figcaption>{html.escape(caption)}</figcaption></figure>'
             )
         gallery_html = "\n".join(gallery) if gallery else '<p class="empty-state">Aucune photographie disponible.</p>'
@@ -528,8 +529,8 @@ def main() -> int:
         ) or "_Aucun objet associé._"
 
         hero_visual = (
-            f'<a href="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" target="_blank">'
-            f'<img src="../../assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}"></a>'
+            f'<a href="{SITE_IMAGES_URL}/{html.escape(Path(text(cover["Fichier"])).name)}" target="_blank">'
+            f'<img src="{SITE_IMAGES_URL}/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}"></a>'
             if cover else '<div class="record-placeholder">Sans photographie</div>'
         )
 
@@ -575,13 +576,13 @@ def main() -> int:
         (INVENTORY_DIR / f"{object_id}.fr.md").write_text(page, encoding="utf-8")
 
         cover_html = (
-            f'<img src="assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}">'
+            f'<img src="{SITE_IMAGES_URL}/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}">'
             if cover else '<div class="card-placeholder">Sans photographie</div>'
         )
         cards.append(
             f'<article class="catalog-card" data-location="{html.escape(location, quote=True)}" '
             f'data-category="{html.escape(category, quote=True)}"><a href="{object_id}/">'
-            f'{cover_html.replace("assets/images/", "../assets/images/")}'
+            f'{cover_html}'
             f'<div class="catalog-card-body"><div class="card-lot"><span>Lot {html.escape(object_id)}</span>'
             f'<span>{html.escape(category)}</span></div><h2>{html.escape(title)}</h2>'
             f'<p class="card-date">{html.escape(text(obj.get("Datation")) or "Datation à préciser")}'

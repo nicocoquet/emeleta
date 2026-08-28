@@ -6,7 +6,7 @@
 <div class="collection-portals">
   <article class="collection-portal collection-portal-library">
     <a class="collection-portal-image" href="bibliotheque/" aria-label="Consulta la biblioteca">
-      <img src="assets/images/bibliotheque.webp" alt="Biblioteca">
+      <img src="/trinketa/assets/images/bibliotheque.webp" alt="Biblioteca">
     </a>
     <div class="collection-portal-copy">
       <p class="eyebrow">Libri</p>
@@ -18,7 +18,7 @@
 
   <article class="collection-portal collection-portal-furniture">
     <a class="collection-portal-image" href="inventaire/" aria-label="Consulta l’inventario degli arredi">
-      <img src="assets/images/inventaire.webp" alt="Inventario">
+      <img src="/trinketa/assets/images/inventaire.webp" alt="Inventario">
     </a>
     <div class="collection-portal-copy">
       <p class="eyebrow">Arredi e oggetti d’arte</p>
