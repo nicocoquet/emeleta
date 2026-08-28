@@ -4,7 +4,7 @@
 Entrées : ``inventaire_mobilier.xlsx`` (feuilles ``Mobilier`` et ``Photos``)
 et les originaux du dossier ``photos/``.
 
-Sorties : fiches et index sous ``docs/catalogue/``, copies d'images sous
+Sorties : fiches et index sous ``docs/inventaire/``, copies d'images sous
 ``docs/assets/images/`` et page Statistiques commune aux deux inventaires.
 Cette page contient le mobilier ainsi que le conteneur dont les données seront
 créées ensuite par ``generate_bibliotheque.py``.
@@ -28,7 +28,8 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / "inventaire_mobilier.xlsx"
 SOURCE_PHOTOS = ROOT / "photos"
 DOCS = ROOT / "docs"
-CATALOG = DOCS / "catalogue"
+INVENTORY_DIR = DOCS / "inventaire"
+LEGACY_CATALOG_DIR = DOCS / "catalogue"
 SITE_IMAGES = DOCS / "assets" / "images"
 STATISTICS = {locale: DOCS / f"statistiques.{locale}.md" for locale in ("fr", "en", "it")}
 
@@ -412,18 +413,30 @@ def main() -> int:
     for items in photos_by_object.values():
         items.sort(key=lambda p: (p["Ordre"] if isinstance(p["Ordre"], (int, float)) else 999, text(p["Fichier"])))
 
-    CATALOG.mkdir(parents=True, exist_ok=True)
+    INVENTORY_DIR.mkdir(parents=True, exist_ok=True)
     SITE_IMAGES.mkdir(parents=True, exist_ok=True)
+    # Supprimer les anciennes sorties afin qu'une génération locale ne publie
+    # pas simultanément les URL /catalogue/ et /inventaire/.
+    if LEGACY_CATALOG_DIR.exists():
+        for legacy in [*LEGACY_CATALOG_DIR.glob("MOB-*.md"), *LEGACY_CATALOG_DIR.glob("index*.md")]:
+            legacy.unlink()
+        try:
+            LEGACY_CATALOG_DIR.rmdir()
+        except OSError:
+            # Conserver le dossier s'il contient un fichier qui n'appartient pas
+            # au générateur, afin de ne jamais supprimer un contenu manuel.
+            pass
+
     # Migration ponctuelle depuis l'ancienne structure non localisée.
-    for legacy in [DOCS / "index.md", CATALOG / "index.md", DOCS / "statistiques.md"]:
+    for legacy in [DOCS / "index.md", INVENTORY_DIR / "index.md", DOCS / "statistiques.md"]:
         if legacy.exists():
             legacy.unlink()
-    for legacy in CATALOG.glob("MOB-*.md"):
+    for legacy in INVENTORY_DIR.glob("MOB-*.md"):
         if not any(legacy.name.endswith(f".{locale}.md") for locale in ("fr", "en", "it")):
             legacy.unlink()
     # Ne régénérer que les fiches françaises : les futures traductions .en.md
     # et .it.md doivent rester intactes.
-    for old in CATALOG.glob("MOB-*.fr.md"):
+    for old in INVENTORY_DIR.glob("MOB-*.fr.md"):
         old.unlink()
 
     cards = []
@@ -559,7 +572,7 @@ def main() -> int:
 
 <p class="notice">L’identification et l’estimation sont indicatives et peuvent évoluer avec de nouvelles mesures, photographies ou expertises.</p>
 """
-        (CATALOG / f"{object_id}.fr.md").write_text(page, encoding="utf-8")
+        (INVENTORY_DIR / f"{object_id}.fr.md").write_text(page, encoding="utf-8")
 
         cover_html = (
             f'<img src="assets/images/{html.escape(Path(text(cover["Fichier"])).name)}" alt="{html.escape(title)}">'
@@ -616,7 +629,7 @@ def main() -> int:
 </div>
 <p class="empty-state catalog-empty" data-catalog-empty hidden>Aucun lot ne correspond à ces critères.</p>
 """
-    (CATALOG / "index.fr.md").write_text(catalogue, encoding="utf-8")
+    (INVENTORY_DIR / "index.fr.md").write_text(catalogue, encoding="utf-8")
     generate_statistics(furniture)
 
     if warnings:

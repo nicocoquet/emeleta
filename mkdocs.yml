@@ -1,4 +1,5 @@
 site_name: Trinketa
+site_url: https://nicocoquet.github.io/trinketa/
 site_description: Catalogue illustré du mobilier et des livres anciens
 site_author: Nicolas Coquet
 docs_dir: docs
@@ -89,7 +90,7 @@ extra_javascript:
 
 nav:
   - Accueil: index.md
-  - Inventaire: catalogue/index.md
+  - Inventaire: inventaire/index.md
   - Bibliothèque: bibliotheque/index.md
   - Statistiques: statistiques.md
   - Contact: contact.md
