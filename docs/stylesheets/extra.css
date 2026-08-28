@@ -37,6 +37,52 @@
   --image-ground: #24211f;
 }
 
+/* Sélecteur de langue : le bouton porte le drapeau de la langue active. */
+.md-header__option .md-select > .md-header__button {
+  width: 2rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 1.5rem 1rem;
+}
+
+.md-header__option .md-select > .md-header__button svg {
+  display: none;
+}
+
+html[lang^="fr"] .md-header__option .md-select > .md-header__button,
+.md-select__link[hreflang="fr"]::before {
+  background-image: url("../assets/icons/flag-fr.svg");
+}
+
+html[lang^="en"] .md-header__option .md-select > .md-header__button,
+.md-select__link[hreflang="en"]::before {
+  background-image: url("../assets/icons/flag-gb.svg");
+}
+
+html[lang^="it"] .md-header__option .md-select > .md-header__button,
+.md-select__link[hreflang="it"]::before {
+  background-image: url("../assets/icons/flag-it.svg");
+}
+
+.md-select__link::before {
+  display: inline-block;
+  width: 1.2rem;
+  height: .8rem;
+  margin-right: .55rem;
+  border: 1px solid rgb(0 0 0 / 18%);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  content: "";
+  vertical-align: -.12rem;
+}
+
+html[lang^="fr"] .md-select__item:has(.md-select__link[hreflang="fr"]),
+html[lang^="en"] .md-select__item:has(.md-select__link[hreflang="en"]),
+html[lang^="it"] .md-select__item:has(.md-select__link[hreflang="it"]) {
+  display: none;
+}
+
 html { scroll-behavior: smooth; }
 body { color: var(--ink); background: var(--paper); font-family: var(--sans); }
 .md-main { background: var(--paper); }
