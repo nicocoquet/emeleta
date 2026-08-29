@@ -9,11 +9,11 @@ pages d’inventaire et de catalogue ne doivent pas être corrigées à la main 
 à chaque déploiement dans cet ordre :
 
 1. `scripts/generate_mobilier.py` produit l’inventaire du mobilier sous
-   `docs/inventario/` et la page
-   Statistiques commune ;
-2. `scripts/generate_bibliotheque.py` produit le catalogue des livres et le
+   `docs/inventario/` et la page Statistiques commune ;
+2. `scripts/apply_bibliotheque_pipeline.py` injecte dans le classeur les notices validées issues du pipeline ISBN ;
+3. `scripts/generate_bibliotheque.py` produit le catalogue des livres et le
    fichier `docs/assets/data/bibliotheque-statistiques.json` ;
-3. MkDocs transforme le dossier `docs/` en site statique et le publie.
+4. MkDocs transforme le dossier `docs/` en site statique et le publie.
 
 Le fichier JSON des statistiques est une sortie technique générée. Le
 JavaScript le lit dans le navigateur pour construire les indicateurs, les
@@ -29,6 +29,7 @@ Pour vérifier localement l'ensemble du processus :
 ```bash
 python -m pip install -r requirements.txt
 python scripts/generate_mobilier.py
+python scripts/apply_bibliotheque_pipeline.py
 python scripts/generate_bibliotheque.py
 mkdocs build --strict
 ```
@@ -62,20 +63,34 @@ Pour masquer temporairement une fiche sans la supprimer du classeur, passez sa v
 
 ## Bibliothèque
 
-### Mise à jour courante
+### Ingestion par ISBN — fonctionnement recommandé
 
-1. Modifier `inventaire_bibliotheque.xlsx` sans changer son nom.
-2. Ajouter les nouveaux fichiers dans `photos/bibliotheque`.
-3. Remplacer le classeur et valider les modifications dans la branche `main`.
+Le point d’entrée des nouveaux livres est désormais `photos/bibliotheque/isbn/` :
 
-### Ajouter un objet dans l'inventaire
+- `a_traiter/` reçoit les nouvelles photographies de codes-barres ;
+- `a_verifier/` reçoit uniquement les cas qui demandent une décision humaine ;
+- `traite/` archive les images qui ont produit une notice validée et publiée.
 
-#### Avec ISBN
-#### Sans ISBN
+Procédure courante :
 
-Les champs inconnus peuvent rester vides.
+1. déposer une ou plusieurs photographies dans `photos/bibliotheque/isbn/a_traiter/` ;
+2. pousser les fichiers sur `main` ;
+3. demander dans ChatGPT : **« traite la file ISBN »** ;
+4. le traitement lit et valide l’ISBN, recherche et contrôle la notice bibliographique, attribue automatiquement le prochain `BIB-xxx`, alimente `data/bibliotheque_pipeline.json`, déclenche la publication et contrôle la page publiée ;
+5. l’image est ensuite archivée sous la forme `BIB-xxx_isbn_<ISBN13>.<extension>` dans `traite/`, ou déplacée dans `a_verifier/` si l’identification n’est pas suffisamment sûre ;
+6. chaque traitement est consigné dans `data/bibliotheque/imports/journal.csv`.
 
-### Ajouter des photographies
+Le classeur `inventaire_bibliotheque.xlsx` reste la base éditoriale. Le journal d’ingestion n’est qu’une trace technique destinée à la traçabilité et à la détection des doublons.
+
+Pour inspecter localement la file et connaître le prochain identifiant disponible :
+
+```bash
+python scripts/check_bibliotheque_queue.py
+```
+
+### Mise à jour manuelle
+
+Il reste possible de modifier directement `inventaire_bibliotheque.xlsx` et d’ajouter les photographies documentaires dans `photos/bibliotheque/`. Les champs inconnus peuvent rester vides.
 
 Pour masquer temporairement une fiche sans la supprimer du classeur, passez sa valeur **Publié** de **Oui** à **Non**.
 
