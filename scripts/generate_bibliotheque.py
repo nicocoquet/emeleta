@@ -60,6 +60,7 @@ STAT_FACETS = [
 # restent prioritaires et permettent d'étendre la carte sans toucher au code.
 KNOWN_CITIES = {
     "paris": (48.8566, 2.3522, "Paris", "France"),
+    "bruyeres-le-chatel": (48.5935, 2.1925, "Bruyères-le-Châtel", "France"),
     "lyon": (45.7640, 4.8357, "Lyon", "France"),
     "strasbourg": (48.5734, 7.7521, "Strasbourg", "France"),
     "londres": (51.5074, -0.1278, "Londres", "Royaume-Uni"),
