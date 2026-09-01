@@ -92,9 +92,9 @@
       "estimateHigh": null,
       "cityHistorical": "Bruyères-le-Châtel",
       "city": "Bruyères-le-Châtel",
-      "country": "",
-      "latitude": null,
-      "longitude": null,
+      "country": "France",
+      "latitude": 48.5935,
+      "longitude": 2.1925,
       "locationUncertain": false
     }
   ],
